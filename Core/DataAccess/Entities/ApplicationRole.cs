@@ -2,7 +2,7 @@
 
 namespace Core.DataAccess.Entities
 {
-    internal class ApplicationRole: IdentityRole
+    public class ApplicationRole: IdentityRole
     {
     }
 }

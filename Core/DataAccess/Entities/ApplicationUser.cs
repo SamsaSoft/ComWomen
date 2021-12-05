@@ -2,8 +2,7 @@
 
 namespace Core.DataAccess.Entities
 {
-    internal class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser
     {
-
     }
 }
