@@ -8,7 +8,7 @@ namespace Core.DataAccess.Entities
         public string Title { get; set; }
         public string Description { get; set; }
         public string Url { get; set; }
-        public MediaTypeEnum Type { get; set; }
+        public MediaTypeEnum MediaTypeId { get; set; }
         public DateTime CreatedAt { get; set; }
         public string AuthorId { get; set; }
         public ApplicationUser Author { get; set; }

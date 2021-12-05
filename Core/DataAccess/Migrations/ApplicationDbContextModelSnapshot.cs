@@ -135,14 +135,11 @@ namespace Core.DataAccess.Migrations
                     b.Property<string>("EditorId")
                         .HasColumnType("text");
 
-                    b.Property<int?>("MediaTypeId")
+                    b.Property<int>("MediaTypeId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Url")
                         .HasColumnType("text");
@@ -316,7 +313,9 @@ namespace Core.DataAccess.Migrations
 
                     b.HasOne("Core.DataAccess.Entities.MediaType", null)
                         .WithMany("Medias")
-                        .HasForeignKey("MediaTypeId");
+                        .HasForeignKey("MediaTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
 

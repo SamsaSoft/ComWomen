@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Core.DataAccess.Migrations
 {
-    public partial class MediaAndMediaType : Migration
+    public partial class Media_MediaType : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,15 +29,14 @@ namespace Core.DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Url = table.Column<string>(type: "text", nullable: true),
-                    Type = table.Column<int>(type: "integer", nullable: false),
+                    MediaTypeId = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     AuthorId = table.Column<string>(type: "text", nullable: true),
                     EditedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    EditorId = table.Column<string>(type: "text", nullable: true),
-                    MediaType = table.Column<int>(type: "integer", nullable: false)
+                    EditorId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -53,10 +52,11 @@ namespace Core.DataAccess.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Medias_MediaTypes_MediaType",
-                        column: x => x.MediaType,
+                        name: "FK_Medias_MediaTypes_MediaTypeId",
+                        column: x => x.MediaTypeId,
                         principalTable: "MediaTypes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -80,9 +80,9 @@ namespace Core.DataAccess.Migrations
                 column: "EditorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Medias_MediaType",
+                name: "IX_Medias_MediaTypeId",
                 table: "Medias",
-                column: "MediaType");
+                column: "MediaTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

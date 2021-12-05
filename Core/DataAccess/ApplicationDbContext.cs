@@ -18,7 +18,7 @@ namespace Core.DataAccess
         {
             modelBuilder
               .Entity<Media>()
-              .Property(e => e.Type)
+              .Property(e => e.MediaTypeId)
               .HasConversion<int>();
 
             modelBuilder
