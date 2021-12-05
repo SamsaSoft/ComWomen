@@ -1,6 +1,7 @@
 ﻿using Core.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Core.DataAccess
 {
@@ -34,6 +35,24 @@ namespace Core.DataAccess
                         {
                             Id = e,
                             Name = e.ToString(),
+                            IsEnabled = true
+                        })
+                );
+
+            modelBuilder
+                .Entity<Language>()
+                .Property(e => e.Id)
+                .HasConversion<int>();
+
+            modelBuilder
+                .Entity<Language>().HasData(
+                    Enum.GetValues(typeof(LanguageEnum))
+                        .Cast<LanguageEnum>()
+                        .Select(e => new Language()
+                        {
+                            Id = e,
+                            Name = new CultureInfo(e.ToString()).NativeName,
+                            LanguageCode = new CultureInfo(e.ToString()).Name,
                             IsEnabled = true
                         })
                 );
