@@ -21,20 +21,20 @@ namespace Admin.Pages
         {
             try
             {
-                var item = new Media
-                {
-                    AuthorId = "bf7337fc-6490-4df4-a877-2d5bb8e6a6f9",
-                    Title = "bla",
-                    Url = "url",
-                    MediaTypeId = MediaTypeEnum.Audio,
-                    CreatedAt = DateTime.UtcNow
-                };
+                //var item = new Media
+                //{
+                //    AuthorId = "bf7337fc-6490-4df4-a877-2d5bb8e6a6f9",
+                //    Title = "bla",
+                //    Url = "url",
+                //    MediaTypeId = MediaTypeEnum.Audio,
+                //    CreatedAt = DateTime.UtcNow
+                //};
 
-                await _mediaService.Upload(item);
+                //await _mediaService.Upload(item);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex.Message);
             }
            
         }
