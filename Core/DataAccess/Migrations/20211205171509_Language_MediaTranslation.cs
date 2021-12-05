@@ -10,6 +10,18 @@ namespace Core.DataAccess.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "Description",
+                table: "Medias");
+
+            migrationBuilder.DropColumn(
+                name: "Title",
+                table: "Medias");
+
+            migrationBuilder.DropColumn(
+                name: "Url",
+                table: "Medias");
+
             migrationBuilder.CreateTable(
                 name: "Language",
                 columns: table => new
@@ -30,23 +42,17 @@ namespace Core.DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(type: "text", nullable: true),
+                    Title = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    MediaId = table.Column<int>(type: "integer", nullable: true),
-                    LanguageId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AuthorId = table.Column<string>(type: "text", nullable: true),
+                    Url = table.Column<string>(type: "text", nullable: true),
                     EditedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    EditorId = table.Column<string>(type: "text", nullable: true)
+                    EditorId = table.Column<string>(type: "text", nullable: true),
+                    LanguageId = table.Column<int>(type: "integer", nullable: true),
+                    MediaId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MediaTranslation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MediaTranslation_AspNetUsers_AuthorId",
-                        column: x => x.AuthorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_MediaTranslation_AspNetUsers_EditorId",
                         column: x => x.EditorId,
@@ -56,8 +62,7 @@ namespace Core.DataAccess.Migrations
                         name: "FK_MediaTranslation_Language_LanguageId",
                         column: x => x.LanguageId,
                         principalTable: "Language",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_MediaTranslation_Medias_MediaId",
                         column: x => x.MediaId,
@@ -74,11 +79,6 @@ namespace Core.DataAccess.Migrations
                     { 2, true, "ru", "русский" },
                     { 3, true, "ky", "кыргызча" }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MediaTranslation_AuthorId",
-                table: "MediaTranslation",
-                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MediaTranslation_EditorId",
@@ -103,6 +103,24 @@ namespace Core.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Language");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Description",
+                table: "Medias",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Title",
+                table: "Medias",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Url",
+                table: "Medias",
+                type: "text",
+                nullable: true);
         }
     }
 }

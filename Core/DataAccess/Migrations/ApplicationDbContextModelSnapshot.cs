@@ -168,9 +168,6 @@ namespace Core.DataAccess.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<DateTime?>("EditedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -179,12 +176,6 @@ namespace Core.DataAccess.Migrations
 
                     b.Property<int>("MediaTypeId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -205,12 +196,6 @@ namespace Core.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AuthorId")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -220,18 +205,20 @@ namespace Core.DataAccess.Migrations
                     b.Property<string>("EditorId")
                         .HasColumnType("text");
 
-                    b.Property<int>("LanguageId")
+                    b.Property<int?>("LanguageId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("MediaId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("Url")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.HasIndex("EditorId");
 
@@ -411,29 +398,19 @@ namespace Core.DataAccess.Migrations
 
             modelBuilder.Entity("Core.DataAccess.Entities.MediaTranslation", b =>
                 {
-                    b.HasOne("Core.DataAccess.Entities.ApplicationUser", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
-
                     b.HasOne("Core.DataAccess.Entities.ApplicationUser", "Editor")
                         .WithMany()
                         .HasForeignKey("EditorId");
 
                     b.HasOne("Core.DataAccess.Entities.Language", null)
                         .WithMany("MediasTranslations")
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LanguageId");
 
-                    b.HasOne("Core.DataAccess.Entities.Media", "Media")
+                    b.HasOne("Core.DataAccess.Entities.Media", null)
                         .WithMany("MediaTranslations")
                         .HasForeignKey("MediaId");
 
-                    b.Navigation("Author");
-
                     b.Navigation("Editor");
-
-                    b.Navigation("Media");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

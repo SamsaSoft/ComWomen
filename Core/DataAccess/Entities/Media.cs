@@ -5,10 +5,6 @@ namespace Core.DataAccess.Entities
     public class Media
     {
         public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public List<MediaTranslation> MediaTranslations { get; set; }
-        public string Url { get; set; }
         public MediaTypeEnum MediaTypeId { get; set; }
         public DateTime CreatedAt { get; set; }
         public string AuthorId { get; set; }
@@ -16,5 +12,6 @@ namespace Core.DataAccess.Entities
         public DateTime? EditedAt { get; set; }
         public string EditorId { get; set; }
         public ApplicationUser Editor { get; set; }
+        public List<MediaTranslation> MediaTranslations { get; set; }
     }
 }
