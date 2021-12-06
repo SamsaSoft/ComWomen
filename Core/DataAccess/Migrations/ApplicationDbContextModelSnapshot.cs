@@ -128,7 +128,7 @@ namespace Core.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Language");
+                    b.ToTable("Languages");
 
                     b.HasData(
                         new
@@ -226,7 +226,7 @@ namespace Core.DataAccess.Migrations
 
                     b.HasIndex("MediaId");
 
-                    b.ToTable("MediaTranslation");
+                    b.ToTable("MediaTranslations");
                 });
 
             modelBuilder.Entity("Core.DataAccess.Entities.MediaType", b =>

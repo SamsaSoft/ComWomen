@@ -9,7 +9,8 @@ namespace Core.DataAccess
     {
         internal DbSet<MediaType> MediaTypes { get; set; }
         internal DbSet<Media> Medias { get; set; }
-
+        internal DbSet<Language> Languages { get; set; }
+        internal DbSet<MediaTranslation> MediaTranslations { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

@@ -50,7 +50,7 @@ namespace Core.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Language",
+                name: "Languages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false),
@@ -60,7 +60,7 @@ namespace Core.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Language", x => x.Id);
+                    table.PrimaryKey("PK_Languages", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -216,7 +216,7 @@ namespace Core.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MediaTranslation",
+                name: "MediaTranslations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -231,26 +231,26 @@ namespace Core.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MediaTranslation", x => x.Id);
+                    table.PrimaryKey("PK_MediaTranslations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MediaTranslation_AspNetUsers_EditorId",
+                        name: "FK_MediaTranslations_AspNetUsers_EditorId",
                         column: x => x.EditorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_MediaTranslation_Language_LanguageId",
+                        name: "FK_MediaTranslations_Languages_LanguageId",
                         column: x => x.LanguageId,
-                        principalTable: "Language",
+                        principalTable: "Languages",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_MediaTranslation_Medias_MediaId",
+                        name: "FK_MediaTranslations_Medias_MediaId",
                         column: x => x.MediaId,
                         principalTable: "Medias",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
-                table: "Language",
+                table: "Languages",
                 columns: new[] { "Id", "IsEnabled", "LanguageCode", "Name" },
                 values: new object[,]
                 {
@@ -322,18 +322,18 @@ namespace Core.DataAccess.Migrations
                 column: "MediaTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MediaTranslation_EditorId",
-                table: "MediaTranslation",
+                name: "IX_MediaTranslations_EditorId",
+                table: "MediaTranslations",
                 column: "EditorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MediaTranslation_LanguageId",
-                table: "MediaTranslation",
+                name: "IX_MediaTranslations_LanguageId",
+                table: "MediaTranslations",
                 column: "LanguageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MediaTranslation_MediaId",
-                table: "MediaTranslation",
+                name: "IX_MediaTranslations_MediaId",
+                table: "MediaTranslations",
                 column: "MediaId");
         }
 
@@ -355,13 +355,13 @@ namespace Core.DataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "MediaTranslation");
+                name: "MediaTranslations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Language");
+                name: "Languages");
 
             migrationBuilder.DropTable(
                 name: "Medias");
