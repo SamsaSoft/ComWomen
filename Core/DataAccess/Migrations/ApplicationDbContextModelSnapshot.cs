@@ -112,6 +112,48 @@ namespace Core.DataAccess.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Core.DataAccess.Entities.Language", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LanguageCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Languages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsEnabled = true,
+                            LanguageCode = "en",
+                            Name = "English"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsEnabled = true,
+                            LanguageCode = "ru",
+                            Name = "Русский"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsEnabled = true,
+                            LanguageCode = "ky",
+                            Name = "Кыргызча"
+                        });
+                });
+
             modelBuilder.Entity("Core.DataAccess.Entities.Media", b =>
                 {
                     b.Property<int>("Id")
@@ -126,9 +168,6 @@ namespace Core.DataAccess.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<DateTime?>("EditedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -137,12 +176,6 @@ namespace Core.DataAccess.Migrations
 
                     b.Property<int>("MediaTypeId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -153,6 +186,47 @@ namespace Core.DataAccess.Migrations
                     b.HasIndex("MediaTypeId");
 
                     b.ToTable("Medias");
+                });
+
+            modelBuilder.Entity("Core.DataAccess.Entities.MediaTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("EditedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EditorId")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("LanguageId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("MediaId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EditorId");
+
+                    b.HasIndex("LanguageId");
+
+                    b.HasIndex("MediaId");
+
+                    b.ToTable("MediaTranslations");
                 });
 
             modelBuilder.Entity("Core.DataAccess.Entities.MediaType", b =>
@@ -322,6 +396,23 @@ namespace Core.DataAccess.Migrations
                     b.Navigation("Editor");
                 });
 
+            modelBuilder.Entity("Core.DataAccess.Entities.MediaTranslation", b =>
+                {
+                    b.HasOne("Core.DataAccess.Entities.ApplicationUser", "Editor")
+                        .WithMany()
+                        .HasForeignKey("EditorId");
+
+                    b.HasOne("Core.DataAccess.Entities.Language", null)
+                        .WithMany("MediasTranslations")
+                        .HasForeignKey("LanguageId");
+
+                    b.HasOne("Core.DataAccess.Entities.Media", null)
+                        .WithMany("MediaTranslations")
+                        .HasForeignKey("MediaId");
+
+                    b.Navigation("Editor");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Core.DataAccess.Entities.ApplicationRole", null)
@@ -371,6 +462,16 @@ namespace Core.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.DataAccess.Entities.Language", b =>
+                {
+                    b.Navigation("MediasTranslations");
+                });
+
+            modelBuilder.Entity("Core.DataAccess.Entities.Media", b =>
+                {
+                    b.Navigation("MediaTranslations");
                 });
 
             modelBuilder.Entity("Core.DataAccess.Entities.MediaType", b =>
