@@ -143,14 +143,14 @@ namespace Core.DataAccess.Migrations
                             Id = 2,
                             IsEnabled = true,
                             LanguageCode = "ru",
-                            Name = "русский"
+                            Name = "Русский"
                         },
                         new
                         {
                             Id = 3,
                             IsEnabled = true,
                             LanguageCode = "ky",
-                            Name = "кыргызча"
+                            Name = "Кыргызча"
                         });
                 });
 

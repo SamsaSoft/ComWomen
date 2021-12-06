@@ -51,7 +51,7 @@ namespace Core.DataAccess
                         .Select(e => new Language()
                         {
                             Id = e,
-                            Name = new CultureInfo(e.ToString()).NativeName,
+                            Name = char.ToUpper(new CultureInfo(e.ToString()).NativeName[0]) + new CultureInfo(e.ToString()).NativeName[1..],
                             LanguageCode = new CultureInfo(e.ToString()).Name,
                             IsEnabled = true
                         })

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211205171509_Language_MediaTranslation")]
-    partial class Language_MediaTranslation
+    [Migration("20211206060326_Identity_Language_Media_MediaType_MediaTranslation")]
+    partial class Identity_Language_Media_MediaType_MediaTranslation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -145,14 +145,14 @@ namespace Core.DataAccess.Migrations
                             Id = 2,
                             IsEnabled = true,
                             LanguageCode = "ru",
-                            Name = "русский"
+                            Name = "Русский"
                         },
                         new
                         {
                             Id = 3,
                             IsEnabled = true,
                             LanguageCode = "ky",
-                            Name = "кыргызча"
+                            Name = "Кыргызча"
                         });
                 });
 
