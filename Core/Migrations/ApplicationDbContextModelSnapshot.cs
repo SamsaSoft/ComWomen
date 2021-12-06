@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Core.DataAccess.Migrations
+namespace Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -205,7 +205,7 @@ namespace Core.DataAccess.Migrations
                     b.Property<string>("EditorId")
                         .HasColumnType("text");
 
-                    b.Property<int?>("LanguageId")
+                    b.Property<int>("LanguageId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("MediaId")
@@ -404,7 +404,9 @@ namespace Core.DataAccess.Migrations
 
                     b.HasOne("Core.DataAccess.Entities.Language", null)
                         .WithMany("MediasTranslations")
-                        .HasForeignKey("LanguageId");
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Core.DataAccess.Entities.Media", null)
                         .WithMany("MediaTranslations")
