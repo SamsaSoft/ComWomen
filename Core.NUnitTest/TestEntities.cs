@@ -85,13 +85,9 @@ namespace Core.NUnitTest
                 media?.MediaTranslations.Select(x=>x.LanguageId));
         }
 
-        [Test]
-        public void MediaDeleteWithMediaTranslationTesting()
+        private Media CreateMedia() 
         {
-            //asign
-            var dbContext = ApplicationDbContextTestFactory.Create();
-            //act
-            var media = new Media
+            return new Media
             {
                 MediaTypeId = Enums.MediaTypeEnum.Photo,
                 MediaTranslations = new List<MediaTranslation>
@@ -112,11 +108,20 @@ namespace Core.NUnitTest
 
                     },
                 },
-            };
+            }; 
+        }
+
+        [Test]
+        public void MediaDeleteWithMediaTranslationTesting()
+        {
+            //asign
+            var dbContext = ApplicationDbContextTestFactory.Create();
+            //act
+            var media = CreateMedia();
             dbContext.Add(media);
             dbContext.SaveChanges();
             var medias = dbContext.Set<Media>();
-            medias.Remove(media); //TODO configure cascading deletion
+            medias.Remove(media);
             dbContext.SaveChanges();
             //assert
             CollectionAssert.IsEmpty(medias);
@@ -124,6 +129,51 @@ namespace Core.NUnitTest
             CollectionAssert.IsEmpty(mediaTranslations);
         }
 
-        //TODO add edit tests
+        [Test]
+        public void MediaSimpleEditTesting()
+        {
+            //asign
+            var dbContext = ApplicationDbContextTestFactory.Create();
+            //act
+            var media = new Media();
+            dbContext.Add(media);
+            dbContext.SaveChanges();
+            var medias = dbContext.Set<Media>();
+            media = medias.Find(1);
+            Assert.IsNotNull(media);
+            var now = System.DateTime.Now;
+            media.EditedAt = now;
+            dbContext.SaveChanges();
+            //assert
+            Assert.AreEqual(now, media?.EditedAt);
+        }
+
+        [Test]
+        public void MediaEditWithMediaTranslationTesting()
+        {
+            //asign
+            var dbContext = ApplicationDbContextTestFactory.Create();
+            var medias = dbContext.Set<Media>();
+            //act
+            var media = CreateMedia();
+            dbContext.Add(media);
+            dbContext.SaveChanges();
+            media = medias.Find(1);
+            Assert.IsNotNull(media);
+            Assert.IsNotNull(media?.MediaTranslations);
+            CollectionAssert.IsNotEmpty(media?.MediaTranslations);
+            var mediaTranslation = media.MediaTranslations.FirstOrDefault(e=>e.LanguageId == Enums.LanguageEnum.ru);
+            Assert.IsNotNull(mediaTranslation);
+            mediaTranslation.Description = "Описание 2";
+            dbContext.SaveChanges();
+            //assert
+            media = medias.Find(1);
+            Assert.IsNotNull(media);
+            Assert.IsNotNull(media?.MediaTranslations);
+            CollectionAssert.IsNotEmpty(media?.MediaTranslations);
+            mediaTranslation = media.MediaTranslations.FirstOrDefault(e => e.LanguageId == Enums.LanguageEnum.ru);
+            Assert.IsNotNull(mediaTranslation);
+            Assert.AreEqual("Описание 2", mediaTranslation?.Description);
+        }
     }
 }

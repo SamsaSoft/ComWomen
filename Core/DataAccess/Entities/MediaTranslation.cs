@@ -12,6 +12,8 @@ namespace Core.DataAccess.Entities
         public LanguageEnum LanguageId { get; set; }
         public DateTime? EditedAt { get; set; }
         public string EditorId { get; set; }
+        public int? MediaId { get; set; }
+        public Media Media { get; set; }
         public ApplicationUser Editor { get; set; }
     }
 }
