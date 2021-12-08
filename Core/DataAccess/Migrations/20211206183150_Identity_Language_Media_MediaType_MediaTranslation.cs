@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -224,9 +223,9 @@ namespace Core.DataAccess.Migrations
                     Title = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Url = table.Column<string>(type: "text", nullable: true),
+                    LanguageId = table.Column<int>(type: "integer", nullable: false),
                     EditedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     EditorId = table.Column<string>(type: "text", nullable: true),
-                    LanguageId = table.Column<int>(type: "integer", nullable: true),
                     MediaId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
@@ -241,7 +240,8 @@ namespace Core.DataAccess.Migrations
                         name: "FK_MediaTranslations_Languages_LanguageId",
                         column: x => x.LanguageId,
                         principalTable: "Languages",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MediaTranslations_Medias_MediaId",
                         column: x => x.MediaId,

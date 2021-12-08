@@ -19,9 +19,15 @@ namespace Core.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
-              .Entity<Media>()
-              .Property(e => e.MediaTypeId)
-              .HasConversion<int>();
+                .Entity<Media>()
+                .Property(e => e.MediaTypeId)
+                .HasConversion<int>();
+
+            modelBuilder
+                .Entity<Media>()
+                .HasMany(e => e.MediaTranslations)
+                .WithOne(o => o.Media)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder
                 .Entity<MediaType>()

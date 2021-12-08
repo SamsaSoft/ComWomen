@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211206064527_Identity_Language_Media_MediaType_MediaTranslation")]
+    [Migration("20211206183150_Identity_Language_Media_MediaType_MediaTranslation")]
     partial class Identity_Language_Media_MediaType_MediaTranslation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -207,7 +207,7 @@ namespace Core.DataAccess.Migrations
                     b.Property<string>("EditorId")
                         .HasColumnType("text");
 
-                    b.Property<int?>("LanguageId")
+                    b.Property<int>("LanguageId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("MediaId")
@@ -406,7 +406,9 @@ namespace Core.DataAccess.Migrations
 
                     b.HasOne("Core.DataAccess.Entities.Language", null)
                         .WithMany("MediasTranslations")
-                        .HasForeignKey("LanguageId");
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Core.DataAccess.Entities.Media", null)
                         .WithMany("MediaTranslations")

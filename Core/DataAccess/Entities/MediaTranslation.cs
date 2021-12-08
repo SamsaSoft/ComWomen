@@ -9,8 +9,11 @@ namespace Core.DataAccess.Entities
         public string Title { get; set; }
         public string Description { get; set; }
         public string Url { get; set; }
+        public LanguageEnum LanguageId { get; set; }
         public DateTime? EditedAt { get; set; }
         public string EditorId { get; set; }
+        public int? MediaId { get; set; }
+        public Media Media { get; set; }
         public ApplicationUser Editor { get; set; }
     }
 }
