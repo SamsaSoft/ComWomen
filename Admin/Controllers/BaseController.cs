@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 
 namespace Admin.Controllers
 {
-    public abstract class BaseController : Controller
+    public abstract class BasePageModel : PageModel
     {
-        public string GetUserId() 
+        public string GetCurrentUserId() 
         {
             if(User == null || !User.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
                 return string.Empty;
