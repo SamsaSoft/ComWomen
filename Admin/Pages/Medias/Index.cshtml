@@ -3,11 +3,44 @@
 @{
     ViewData["Title"] = "Index";
 }
-@for (int i = 0; i < 5; i++)
-{
-    <div class="row text-center">
-        <div class="col">
-            <p>This sample string</p>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-10">
+                <h1>Medias</h1>
+            </div>
+            <div class="col-2">
+                <a asp-page="Create" class="btn btn-primary">Create</a>
+            </div>
         </div>
     </div>
-}
+        @foreach (var item in Model.Medias)
+        {
+            <div class="row text-center mt-1 mb-1">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header text-center text-primary p-0 text-uppercase">
+                            <h5>@item[Core.Enums.LanguageEnum.ru].Title</h5>
+                        </div>
+                        <div class="card-body p-0 justify-content-center">
+                            <div class="row row-cols-3 align-items-center">
+                                <div class="col-2 ">
+                                    <img class="img-fluid" src="~/images/@item[Core.Enums.LanguageEnum.ru].Url" />
+                                </div>
+                                <div class="col-8 bg-light top-0 text-start">
+                                    <span>@item[Core.Enums.LanguageEnum.ru].Description</span>
+                                </div>
+                                <div class="col-2">
+                                    <a class="btn btn-primary p-0 m-1 d-block" style="font-size:small;">Details</a>
+                                    <a class="btn btn-primary p-0 m-1 d-block" style="font-size:small;">Edit</a>
+                                    <a class="btn btn-danger p-0 m-1 d-block" style="font-size:small;">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+

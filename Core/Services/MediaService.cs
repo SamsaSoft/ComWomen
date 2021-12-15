@@ -29,7 +29,12 @@ namespace Core.Services
             return media;
         }
 
-        public async Task<List<Media>> GetAllWithType(MediaTypeEnum type) => await _context.Medias.Where(x => x.MediaTypeId == type).ToListAsync();
+        public async Task<List<Media>> GetAllWithType(MediaTypeEnum type) => 
+            await _context.Medias
+            .Where(x => x.MediaTypeId == type)
+            .Include(x => x.Author)
+            .Include(x => x.MediaTranslations)
+            .ToListAsync();
 
         public async Task DelteById(int id)
         {
