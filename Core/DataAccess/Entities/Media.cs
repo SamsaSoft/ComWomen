@@ -13,5 +13,12 @@ namespace Core.DataAccess.Entities
         public string EditorId { get; set; }
         public ApplicationUser Editor { get; set; }
         public List<MediaTranslation> MediaTranslations { get; set; }
+
+        public MediaTranslation this[LanguageEnum language] 
+        {
+            get { 
+                return this.MediaTranslations.FirstOrDefault(x => x.LanguageId == language);
+            }
+        }
     }
 }

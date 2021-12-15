@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 
-namespace Admin.Controllers
+namespace Admin.Common
 {
     public abstract class BasePageModel : PageModel
     {
