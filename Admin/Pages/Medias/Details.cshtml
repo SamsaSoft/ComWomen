@@ -1,0 +1,76 @@
+﻿@page "{mediaid?}"
+@model Admin.Pages.Medias.DetailsModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <ul class="nav nav-pills card-header-pills">
+                    @foreach (var item in Enum.GetNames<LanguageEnum>())
+                    {
+                        <li class="nav-item">
+                            <a id='@($"lang_nav_{item}")' class="nav-link" aria-current="true" href="#">@item</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <input hidden asp-for="@Model.Media.MediaTypeId" />
+            @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
+            {
+                <div id='@($"lang_body_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
+                    <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
+                    <span asp-for="@Model.Media.MediaTranslations[i].Title" class="form-control">@Model.Media.MediaTranslations[i].Title</span>
+
+                    <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
+                    <span class="form-control">@Model.Media.MediaTranslations[i].Description</span>
+
+                    <label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label d-block"></label>
+                    <img class="img-thumbnail img-fluid" asp-for="@Model.Media.MediaTranslations[i].Url" src="\images\@Model.Media.MediaTranslations[i].Url" alt="@Model.Media.MediaTranslations[i].Url" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function clearall()
+        {
+            var values = @(Json.Serialize(Enum.GetNames<LanguageEnum>()));
+            for(var item of values)
+            {
+                $(`#lang_nav_${item}`).removeClass("active");
+                $(`#lang_body_${item}`).attr("hidden", "");
+            }
+        };
+
+        function getactivetab() {
+            var values = @(Json.Serialize(Enum.GetNames<LanguageEnum>()));
+            for(var item of values)
+            {
+                if($(`#lang_nav_${item}`).hasClass("active"))
+                    return item;
+            }
+        };
+
+        $(document).ready(function () {
+            clearall();
+            $('@($"#lang_nav_{Enum.GetNames<LanguageEnum>().First()}")').addClass("active");
+            $('@($"#lang_body_{Enum.GetNames<LanguageEnum>().First()}")').removeAttr("hidden");
+            @foreach (var item in Enum.GetNames<LanguageEnum>())
+            {
+                @:$('@($"#lang_nav_{item}")').on("click", function()
+                @:{
+                    @:clearall();
+                    @:$('@($"#lang_nav_{item}")').addClass("active");
+                    @:$('@($"#lang_body_{item}")').removeAttr("hidden");
+                @:});
+            }
+        });
+    </script>
+}

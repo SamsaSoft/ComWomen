@@ -16,7 +16,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AuthorizePage("/Medias/Create"); 
+    options.Conventions.AuthorizeFolder("/Medias"); 
 });
 
 // DI

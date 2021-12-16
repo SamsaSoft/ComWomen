@@ -8,12 +8,12 @@ namespace Admin.Pages.Medias
     public class IndexModel : BasePageModel
     {
         private readonly IMediaService _mediaService;
-        private readonly IWebHostEnvironment _webHost;
 
-        public IndexModel(IMediaService mediaService, IWebHostEnvironment webHost)
+        public LanguageEnum ActiveLanguage { get; set; }
+
+        public IndexModel(IMediaService mediaService)
         {
             _mediaService = mediaService;
-            _webHost = webHost;
         }
 
         [BindProperty]
@@ -21,6 +21,7 @@ namespace Admin.Pages.Medias
 
         public async Task<IActionResult> OnGetAsync()
         {
+            ActiveLanguage = LanguageEnum.ky;
             Medias = await _mediaService.GetAllWithType(Core.Enums.MediaTypeEnum.Photo);
             return Page();
         }

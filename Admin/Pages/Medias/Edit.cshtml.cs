@@ -1,19 +1,16 @@
 using Admin.Common;
-using Core.Enums;
 using Core.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
 
 namespace Admin.Pages.Medias
 {
-    public class CreateModel : BasePageModel
+    public class EditModel : BasePageModel
     {
         private readonly IMediaService _mediaService;
         private readonly IWebHostEnvironment _webHost;
 
-        public CreateModel(IMediaService mediaService, IWebHostEnvironment webHost)
+        public EditModel(IMediaService mediaService, IWebHostEnvironment webHost)
         {
             _mediaService = mediaService;
             _webHost = webHost;
@@ -23,29 +20,41 @@ namespace Admin.Pages.Medias
         [BindProperty]
         public Dictionary<LanguageEnum, IFormFile> Files { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        [BindProperty(SupportsGet = true)]
+        public int? MediaId { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
-            Media = new Media
+            if (!MediaId.HasValue)
             {
-                MediaTypeId = MediaTypeEnum.Photo,
-                MediaTranslations = CreateMediaTranslationsAllLanguages().ToList(),
-            };
+                return NotFound();
+            }
             Files = CreateFileDictionaryAllLanguages();
-            await Task.CompletedTask;
+            Media = await _mediaService.GetById(MediaId.Value);
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            Media.AuthorId = GetCurrentUserId();
-            Media.CreatedAt = DateTime.UtcNow;
+            Media.CreatedAt = DateTime.SpecifyKind(Media.CreatedAt, DateTimeKind.Utc); //fix db postgress
+            Media.EditorId = GetCurrentUserId();
+            Media.EditedAt = DateTime.UtcNow;
             await ProcessingAttachFiles();
-            await _mediaService.Upload(Media);
+            await _mediaService.Update(Media);
             return RedirectToPage("index");
+        }
+        private static Dictionary<LanguageEnum, IFormFile> CreateFileDictionaryAllLanguages()
+        {
+            Dictionary<LanguageEnum, IFormFile> files = new Dictionary<LanguageEnum, IFormFile>();
+            foreach (var item in Enum.GetValues<LanguageEnum>())
+            {
+                files.Add(item, null);
+            }
+            return files;
         }
 
         private async Task ProcessingAttachFiles()
@@ -65,23 +74,6 @@ namespace Admin.Pages.Medias
                     using var stream = new FileStream(filePath, FileMode.CreateNew);
                     await Files[item].CopyToAsync(stream);
                 }
-            }
-        }
-
-        private static Dictionary<LanguageEnum, IFormFile> CreateFileDictionaryAllLanguages()
-        {
-            Dictionary<LanguageEnum, IFormFile> files = new Dictionary<LanguageEnum, IFormFile>();
-            foreach (var item in Enum.GetValues<LanguageEnum>())
-            {
-                files.Add(item, null);
-            }
-            return files;
-        }
-        private static IEnumerable<MediaTranslation> CreateMediaTranslationsAllLanguages()
-        {
-            foreach (var item in Enum.GetValues<LanguageEnum>())
-            {
-                yield return new MediaTranslation() { LanguageId = item };
             }
         }
     }
