@@ -21,17 +21,20 @@ namespace Admin.Pages.Medias
         public Dictionary<LanguageEnum, IFormFile> Files { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public int? MediaId { get; set; }
+        public int MediaId { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            if (!MediaId.HasValue)
+            try
+            {
+                Files = CreateFileDictionaryAllLanguages();
+                Media = await _mediaService.GetById(MediaId);
+                return Page();
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-            Files = CreateFileDictionaryAllLanguages();
-            Media = await _mediaService.GetById(MediaId.Value);
-            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()

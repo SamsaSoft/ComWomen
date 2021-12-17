@@ -5,8 +5,9 @@ namespace Core.DataAccess.Entities
     public class MediaTranslation
     {
         public int Id { get; set; }
-        [MaxLength(128)]
+        [MaxLength(128), Required]
         public string Title { get; set; }
+        [Required]
         public string Description { get; set; }
         public string Url { get; set; }
         public LanguageEnum LanguageId { get; set; }

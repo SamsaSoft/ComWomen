@@ -1,4 +1,4 @@
-﻿@page "{mediaid?}"
+﻿@page "{mediaid}"
 @model Admin.Pages.Medias.EditModel
 
 @{
@@ -6,6 +6,10 @@
 }
 
 <h1>Edit</h1>
+
+<div class="text-danger text-opacity-75" asp-validation-summary="All">
+
+</div>
 
 <div class="row">
     <div class="col">
@@ -92,7 +96,7 @@
             preview.children().remove();
             var img = $("<img>");
             img.attr("src", url);
-            img.addClass("img-fluid p-3");
+            img.addClass("img-thumbnail img-fluid m-3");
             preview.prepend(img);
         }
 
@@ -116,4 +120,5 @@
             }
         });
     </script>
+    <partial name="_ValidationScriptsPartial" />
 }

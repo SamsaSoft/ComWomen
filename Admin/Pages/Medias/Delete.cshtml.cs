@@ -5,18 +5,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Admin.Pages.Medias
 {
-    public class DetailsModel : BasePageModel
+    public class DeleteModel : BasePageModel
     {
-        public LanguageEnum ActiveLanguage { get; set; }
 
         private readonly IMediaService _mediaService;
+        private readonly IWebHostEnvironment _webHost;
 
-        public Media Media { get; set; }
-
-        public DetailsModel(IMediaService mediaService)
+        public DeleteModel(IMediaService mediaService, IWebHostEnvironment webHost)
         {
             _mediaService = mediaService;
+            _webHost = webHost;
         }
+        [BindProperty]
+        public Media Media { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public int MediaId { get; set; }
@@ -32,6 +33,13 @@ namespace Admin.Pages.Medias
             {
                 return NotFound();
             }
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            //TODO check and remove files
+            await _mediaService.DelteById(MediaId);
+            return RedirectToPage("index");
         }
     }
 }
