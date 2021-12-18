@@ -51,5 +51,13 @@ namespace Core.Services
             _context.Update(media);
             await _context.SaveChangesAsync();
         }
+
+        public string LanguageIdToCode(LanguageEnum language)
+        {
+            var lang = _context.Languages.Find(language);
+            if (lang == null)
+                throw new KeyNotFoundException("This language is not in the database");
+            return lang.LanguageCode;
+        }
     }
 }

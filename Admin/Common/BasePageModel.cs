@@ -12,10 +12,5 @@ namespace Admin.Common
                 return string.Empty;
             return User.Claims.First(x=>x.Type == ClaimTypes.NameIdentifier).Value;
         }
-
-        public string LanguageIdToCode(LanguageEnum language) 
-        {
-            return language.ToString();
-        }
     }
 }

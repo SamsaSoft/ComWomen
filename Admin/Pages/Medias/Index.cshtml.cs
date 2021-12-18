@@ -5,15 +5,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Admin.Pages.Medias
 {
-    public class IndexModel : BasePageModel
+    public class IndexModel : BaseMediaPageModel
     {
-        private readonly IMediaService _mediaService;
-
         public LanguageEnum ActiveLanguage { get; set; }
 
-        public IndexModel(IMediaService mediaService)
+        public IndexModel(IMediaService mediaService):base(mediaService)
         {
-            _mediaService = mediaService;
         }
 
         [BindProperty]

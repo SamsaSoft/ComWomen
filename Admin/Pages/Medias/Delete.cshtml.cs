@@ -5,15 +5,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Admin.Pages.Medias
 {
-    public class DeleteModel : BasePageModel
+    public class DeleteModel : BaseMediaPageModel
     {
-
-        private readonly IMediaService _mediaService;
         private readonly IWebHostEnvironment _webHost;
 
-        public DeleteModel(IMediaService mediaService, IWebHostEnvironment webHost)
+        public DeleteModel(IMediaService mediaService, IWebHostEnvironment webHost):base(mediaService)
         {
-            _mediaService = mediaService;
             _webHost = webHost;
         }
         [BindProperty]

@@ -5,14 +5,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Admin.Pages.Medias
 {
-    public class EditModel : BasePageModel
+    public class EditModel : BaseMediaPageModel
     {
-        private readonly IMediaService _mediaService;
         private readonly IWebHostEnvironment _webHost;
 
-        public EditModel(IMediaService mediaService, IWebHostEnvironment webHost)
+        public EditModel(IMediaService mediaService, IWebHostEnvironment webHost):base(mediaService)
         {
-            _mediaService = mediaService;
             _webHost = webHost;
         }
         [BindProperty]

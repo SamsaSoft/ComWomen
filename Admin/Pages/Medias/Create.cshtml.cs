@@ -8,21 +8,20 @@ using System.Security.Claims;
 
 namespace Admin.Pages.Medias
 {
-    public class CreateModel : BasePageModel
+    public class CreateModel : BaseMediaPageModel
     {
-        private readonly IMediaService _mediaService;
         private readonly IWebHostEnvironment _webHost;
 
-        public CreateModel(IMediaService mediaService, IWebHostEnvironment webHost)
+        public CreateModel(IMediaService mediaService, IWebHostEnvironment webHost):base(mediaService)
         {
-            _mediaService = mediaService;
             _webHost = webHost;
         }
+
         [BindProperty]
         public Media Media { get; set; }
         [BindProperty]
         public Dictionary<LanguageEnum, IFormFile> Files { get; set; }
-        public IEnumerable<LanguageEnum> ActiveLanguages => Enum.GetValues<LanguageEnum>().Where(x=>x!= LanguageEnum.en);
+        public IEnumerable<LanguageEnum> ActiveLanguages => Enum.GetValues<LanguageEnum>();
         public async Task<IActionResult> OnGet()
         {
             Media = new Media

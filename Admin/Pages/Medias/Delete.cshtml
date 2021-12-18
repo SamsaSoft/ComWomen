@@ -29,7 +29,7 @@
                     {
                         var strItem = Model.LanguageIdToCode(item);
                         <li class="nav-item">
-                            <a id='@($"lang_nav_{item}")' class="nav-link" aria-current="true" href="#">@item</a>
+                            <a id='@($"lang_nav_{strItem}")' class="nav-link" aria-current="true" href="#">@strItem</a>
                         </li>
                     }
                 </ul>
