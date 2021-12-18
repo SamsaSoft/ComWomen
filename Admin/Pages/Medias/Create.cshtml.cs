@@ -56,6 +56,7 @@ namespace Admin.Pages.Medias
             {
                 if (Files[item] != null)
                 {
+                    //TODO fix empty file
                     var filePath = Path.Combine(mediaPath, Files[item].FileName);
                     Media[item].Url = Files[item].FileName;
                     if (System.IO.File.Exists(filePath))
