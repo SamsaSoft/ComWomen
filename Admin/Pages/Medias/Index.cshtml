@@ -29,7 +29,7 @@
                                     <img class="img-fluid" src="~/images/@item[Model.ActiveLanguage].Url" />
                                 </div>
                                 <div class="col-8 bg-light top-0 text-start">
-                                    <span>@item[Model.ActiveLanguage].Description</span>
+                                    <textarea rows="3" class="form-control" readonly>@item[Model.ActiveLanguage].Description</textarea>
                                 </div>
                                 <div class="col-2">
                                     <a asp-page="Details" asp-route-mediaid="@item.Id" class="btn btn-primary p-0 m-1 d-block" style="font-size:small;">Details</a>

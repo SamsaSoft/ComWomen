@@ -15,10 +15,11 @@
         <div class="card">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills">
-                    @foreach (var item in Enum.GetNames<LanguageEnum>())
+                    @foreach (var item in Model.ActiveLanguages)
                     {
+                        var strItem = Model.LanguageIdToCode(item);
                         <li class="nav-item">
-                            <a id='@($"lang_nav_{item}")' class="nav-link" aria-current="true" href="#">@item</a>
+                            <a id='@($"lang_nav_{strItem}")' class="nav-link" aria-current="true" href="#">@strItem</a>
                         </li>
                     }
                 </ul>
@@ -27,7 +28,7 @@
                 <input hidden asp-for="@Model.Media.MediaTypeId" />
                 @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
                 {
-                    <div id='@($"lang_body_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
+                    <div id='@($"lang_body_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
                         <input hidden asp-for="@Model.Media.MediaTranslations[i].LanguageId" />
 
                         <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
@@ -35,14 +36,14 @@
                         <span asp-validation-for="@Model.Media.MediaTranslations[i].Title" class="text-danger"></span>
 
                         <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
-                        <input asp-for="@Model.Media.MediaTranslations[i].Description" class="form-control" />
+                        <textarea type="text" rows="3" asp-for="@Model.Media.MediaTranslations[i].Description" class="form-control"></textarea>
                         <span asp-validation-for="@Model.Media.MediaTranslations[i].Description" class="text-danger"></span>
 
                         <label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label"></label>
                         <input asp-for="@Model.Files[Model.Media.MediaTranslations[i].LanguageId]" type="file" class="form-control" accept="audio/*,video/*,image/*,MIME_type" id='@($"select_file_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' />
                         <input hidden name="Files[@Model.Media.MediaTranslations[i].LanguageId].Key" value="@Model.Media.MediaTranslations[i].LanguageId" />
                         <span asp-validation-for="@Model.Media.MediaTranslations[i].Url" class="text-danger"></span>
-                        <div id='@($"preview_file_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' class="preview">
+                        <div id='@($"preview_file_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="preview">
                             <p>No files currently selected for upload</p>
                         </div>
                     </div>
@@ -55,9 +56,9 @@
 
 @section Scripts {
     <script>
+        let values = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
         function clearall()
         {
-            var values = @(Json.Serialize(Enum.GetNames<LanguageEnum>()));
             for(var item of values)
             {
                 $(`#lang_nav_${item}`).removeClass("active");
@@ -66,7 +67,6 @@
         };
 
         function getactivetab() {
-            var values = @(Json.Serialize(Enum.GetNames<LanguageEnum>()));
             for(var item of values)
             {
                 if($(`#lang_nav_${item}`).hasClass("active"))
@@ -76,9 +76,9 @@
 
         $(document).ready(function () {
             clearall();
-            $('@($"#lang_nav_{Enum.GetNames<LanguageEnum>().First()}")').addClass("active");
-            $('@($"#lang_body_{Enum.GetNames<LanguageEnum>().First()}")').removeAttr("hidden");
-            @foreach (var item in Enum.GetNames<LanguageEnum>())
+            $('@($"#lang_nav_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').addClass("active");
+            $('@($"#lang_body_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').removeAttr("hidden");
+            @foreach (var item in Model.ActiveLanguages.Select(Model.LanguageIdToCode))
             {
                 @:$('@($"#lang_nav_{item}")').on("click", function()
                 @:{

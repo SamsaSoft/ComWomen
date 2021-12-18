@@ -22,7 +22,7 @@ namespace Admin.Pages.Medias
         public Media Media { get; set; }
         [BindProperty]
         public Dictionary<LanguageEnum, IFormFile> Files { get; set; }
-
+        public IEnumerable<LanguageEnum> ActiveLanguages => Enum.GetValues<LanguageEnum>().Where(x=>x!= LanguageEnum.en);
         public async Task<IActionResult> OnGet()
         {
             Media = new Media
@@ -52,7 +52,8 @@ namespace Admin.Pages.Medias
         {
             var wwwPath = _webHost.WebRootPath;
             var mediaPath = Path.Combine(wwwPath, "images");
-            foreach (var item in Enum.GetValues<LanguageEnum>())
+            CreateDirectoryIfNotExists(mediaPath);
+            foreach (var item in ActiveLanguages)
             {
                 if (Files[item] != null)
                 {
@@ -68,18 +69,27 @@ namespace Admin.Pages.Medias
             }
         }
 
-        private static Dictionary<LanguageEnum, IFormFile> CreateFileDictionaryAllLanguages()
+        private void CreateDirectoryIfNotExists(string mediaPath)
         {
-            Dictionary<LanguageEnum, IFormFile> files = new Dictionary<LanguageEnum, IFormFile>();
-            foreach (var item in Enum.GetValues<LanguageEnum>())
+            if (!Directory.Exists(mediaPath))
+            {
+                Directory.CreateDirectory(mediaPath);
+            }
+        }
+
+        private Dictionary<LanguageEnum, IFormFile> CreateFileDictionaryAllLanguages()
+        {
+            var files = new Dictionary<LanguageEnum, IFormFile>();
+            foreach (var item in ActiveLanguages)
             {
                 files.Add(item, null);
             }
             return files;
         }
-        private static IEnumerable<MediaTranslation> CreateMediaTranslationsAllLanguages()
+
+        private IEnumerable<MediaTranslation> CreateMediaTranslationsAllLanguages()
         {
-            foreach (var item in Enum.GetValues<LanguageEnum>())
+            foreach (var item in ActiveLanguages)
             {
                 yield return new MediaTranslation() { LanguageId = item };
             }

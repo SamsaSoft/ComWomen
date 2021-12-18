@@ -13,6 +13,8 @@ namespace Admin.Pages.Medias
 
         public Media Media { get; set; }
 
+        public IEnumerable<LanguageEnum> ActiveLanguages => Media.MediaTranslations.Select(x => x.LanguageId);
+
         public DetailsModel(IMediaService mediaService)
         {
             _mediaService = mediaService;

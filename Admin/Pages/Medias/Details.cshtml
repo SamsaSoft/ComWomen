@@ -11,10 +11,11 @@
         <div class="card text-center">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills">
-                    @foreach (var item in Enum.GetNames<LanguageEnum>())
+                    @foreach (var item in Model.ActiveLanguages)
                     {
+                        var strItem = Model.LanguageIdToCode(item);
                         <li class="nav-item">
-                            <a id='@($"lang_nav_{item}")' class="nav-link" aria-current="true" href="#">@item</a>
+                            <a id='@($"lang_nav_{strItem}")' class="nav-link" aria-current="true" href="#">@strItem</a>
                         </li>
                     }
                 </ul>
@@ -22,12 +23,12 @@
             <input hidden asp-for="@Model.Media.MediaTypeId" />
             @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
             {
-                <div id='@($"lang_body_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
+                <div id='@($"lang_body_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
                     <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
                     <span asp-for="@Model.Media.MediaTranslations[i].Title" class="form-control">@Model.Media.MediaTranslations[i].Title</span>
 
                     <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
-                    <span class="form-control">@Model.Media.MediaTranslations[i].Description</span>
+                    <textarea rows="3" class="form-control">@Model.Media.MediaTranslations[i].Description</textarea>
 
                     <label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label d-block"></label>
                     <img class="img-thumbnail img-fluid" asp-for="@Model.Media.MediaTranslations[i].Url" src="\images\@Model.Media.MediaTranslations[i].Url" alt="@Model.Media.MediaTranslations[i].Url" />
@@ -39,9 +40,9 @@
 
 @section Scripts {
     <script type="text/javascript">
+        let values = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
         function clearall()
         {
-            var values = @(Json.Serialize(Enum.GetNames<LanguageEnum>()));
             for(var item of values)
             {
                 $(`#lang_nav_${item}`).removeClass("active");
@@ -50,7 +51,6 @@
         };
 
         function getactivetab() {
-            var values = @(Json.Serialize(Enum.GetNames<LanguageEnum>()));
             for(var item of values)
             {
                 if($(`#lang_nav_${item}`).hasClass("active"))
@@ -60,9 +60,9 @@
 
         $(document).ready(function () {
             clearall();
-            $('@($"#lang_nav_{Enum.GetNames<LanguageEnum>().First()}")').addClass("active");
-            $('@($"#lang_body_{Enum.GetNames<LanguageEnum>().First()}")').removeAttr("hidden");
-            @foreach (var item in Enum.GetNames<LanguageEnum>())
+            $('@($"#lang_nav_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').addClass("active");
+            $('@($"#lang_body_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').removeAttr("hidden");
+            @foreach (var item in Model.ActiveLanguages.Select(Model.LanguageIdToCode))
             {
                 @:$('@($"#lang_nav_{item}")').on("click", function()
                 @:{

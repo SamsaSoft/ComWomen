@@ -20,6 +20,8 @@ namespace Admin.Pages.Medias
         [BindProperty]
         public Dictionary<LanguageEnum, IFormFile> Files { get; set; }
 
+        public IEnumerable<LanguageEnum> ActiveLanguages => Media.MediaTranslations.Select(x=>x.LanguageId);
+
         [BindProperty(SupportsGet = true)]
         public int MediaId { get; set; }
 
@@ -27,8 +29,8 @@ namespace Admin.Pages.Medias
         {
             try
             {
-                Files = CreateFileDictionaryAllLanguages();
                 Media = await _mediaService.GetById(MediaId);
+                Files = CreateFileDictionaryAllLanguages();
                 return Page();
             }
             catch (KeyNotFoundException)
@@ -50,10 +52,10 @@ namespace Admin.Pages.Medias
             await _mediaService.Update(Media);
             return RedirectToPage("index");
         }
-        private static Dictionary<LanguageEnum, IFormFile> CreateFileDictionaryAllLanguages()
+        private Dictionary<LanguageEnum, IFormFile> CreateFileDictionaryAllLanguages()
         {
-            Dictionary<LanguageEnum, IFormFile> files = new Dictionary<LanguageEnum, IFormFile>();
-            foreach (var item in Enum.GetValues<LanguageEnum>())
+            var files = new Dictionary<LanguageEnum, IFormFile>();
+            foreach (var item in ActiveLanguages)
             {
                 files.Add(item, null);
             }
@@ -64,7 +66,7 @@ namespace Admin.Pages.Medias
         {
             var wwwPath = _webHost.WebRootPath;
             var mediaPath = Path.Combine(wwwPath, "images");
-            foreach (var item in Enum.GetValues<LanguageEnum>())
+            foreach (var item in ActiveLanguages)
             {
                 if (Files[item] != null)
                 {

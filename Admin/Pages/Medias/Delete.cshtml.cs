@@ -21,7 +21,7 @@ namespace Admin.Pages.Medias
 
         [BindProperty(SupportsGet = true)]
         public int MediaId { get; set; }
-
+        public IEnumerable<LanguageEnum> ActiveLanguages => Media.MediaTranslations.Select(x => x.LanguageId);
         public async Task<IActionResult> OnGetAsync()
         {
             try
