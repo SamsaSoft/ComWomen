@@ -48,7 +48,7 @@
 
                         <input hidden id='@($"url_file_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' value="@Model.Media.MediaTranslations[i].Url" />
                         @*<label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label"></label>*@
-                        <input asp-for="@Model.Files[Model.Media.MediaTranslations[i].LanguageId]" type="file" class="form-control" accept="audio/*,video/*,image/*,MIME_type" id='@($"select_file_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' />
+                        <input asp-for="@Model.Files[Model.Media.MediaTranslations[i].LanguageId]" type="file" class="form-control" accept="@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)/*,MIME_type" id='@($"select_file_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' />
                         <input hidden name="Files[@Model.Media.MediaTranslations[i].LanguageId].Key" value="@Model.Media.MediaTranslations[i].LanguageId" />
                         <span asp-validation-for="@Model.Media.MediaTranslations[i].Url" class="text-danger"></span>
                         <div id='@($"preview_file_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="preview">
@@ -67,11 +67,11 @@
     <script>
         let langs = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
 
-        function initmedia(cls, lang, langs) {
+        function initmedia(cls, lang) {
             var hidenurl = $(`#url_file_${lang}`).get();
             var url = hidenurl[0].value;
             if (url != "") {
-                updatemedia(cls, `/images/${url}`, lang);
+                updatemedia(cls, `/${cls}/${url}`, lang);
             }
         };
 
@@ -89,16 +89,16 @@
             $('@($"#lang_body_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').removeAttr("hidden");
             @foreach (var item in Model.ActiveLanguages.Select(Model.LanguageIdToCode))
             {
-                @:initmedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', '@item', langs);
+                @:initmedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', '@item');
                 @:$('@($"#lang_nav_{item}")').on("click", function()
                 @:{
                     @:clearall(langs);
                     @:$('@($"#lang_nav_{item}")').addClass("active");
                     @:$('@($"#lang_body_{item}")').removeAttr("hidden");
-                    @:initmedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', '@item', langs);
+                    @:initmedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', '@item');
                 @:});
                 @:$('@($"#select_file_{item}")').on('change', function () {
-                    @:updatemedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', window.URL.createObjectURL(this.files[0]), langs);
+                    @:updatemedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', window.URL.createObjectURL(this.files[0]), '@item');
                 @:});
             }
         });

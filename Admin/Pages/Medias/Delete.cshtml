@@ -55,7 +55,7 @@
                     }
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Video)
                     {
-                        <video src="~/video/@Model.Media[Model.ActiveLanguage].Url" controls></video>
+                        <video class="form-control img-fluid" src="~/video/@Model.Media[Model.ActiveLanguage].Url" controls></video>
                     }
                 </div>
             }

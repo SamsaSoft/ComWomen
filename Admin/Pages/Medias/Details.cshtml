@@ -23,16 +23,27 @@
             <input hidden asp-for="@Model.Media.MediaTypeId" />
             @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
             {
-                <div id='@($"lang_body_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
-                    <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
-                    <span asp-for="@Model.Media.MediaTranslations[i].Title" class="form-control">@Model.Media.MediaTranslations[i].Title</span>
+        <div id='@($"lang_body_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
+            <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
+            <span asp-for="@Model.Media.MediaTranslations[i].Title" class="form-control">@Model.Media.MediaTranslations[i].Title</span>
 
-                    <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
-                    <textarea rows="3" class="form-control">@Model.Media.MediaTranslations[i].Description</textarea>
+            <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
+            <textarea rows="3" class="form-control">@Model.Media.MediaTranslations[i].Description</textarea>
 
-                    <label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label d-block"></label>
-                    <img class="img-thumbnail img-fluid" asp-for="@Model.Media.MediaTranslations[i].Url" src="\images\@Model.Media.MediaTranslations[i].Url" alt="@Model.Media.MediaTranslations[i].Url" />
-                </div>
+            <label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label d-block"></label>
+            @if (Model.Media.MediaTypeId == MediaTypeEnum.Photo)
+            {
+                <img class="img-fluid" src="~/images/@Model.Media.MediaTranslations[i].Url" />
+            }
+            @if (Model.Media.MediaTypeId == MediaTypeEnum.Audio)
+            {
+                <audio src="~/audio/@Model.Media.MediaTranslations[i].Url" controls></audio>
+            }
+            @if (Model.Media.MediaTypeId == MediaTypeEnum.Video)
+            {
+                <video class="form-control" src="~/video/@Model.Media.MediaTranslations[i].Url" controls></video>
+            }
+        </div>
             }
         </div>
     </div>
