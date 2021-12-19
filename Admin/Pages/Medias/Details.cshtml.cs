@@ -25,6 +25,7 @@ namespace Admin.Pages.Medias
         {
             try
             {
+                ActiveLanguage = LanguageEnum.ru;
                 Media = await _mediaService.GetById(MediaId);
                 return Page();
             }

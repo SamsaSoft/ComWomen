@@ -31,7 +31,7 @@ function createvideofromurl(url) {
     var htmlTag = $("<video>");
     htmlTag.attr("src", url);
     htmlTag.attr("controls", "");
-    htmlTag.addClass("p-3");
+    htmlTag.addClass("form-control img-fluid p-3");
     return htmlTag;
 }
 
