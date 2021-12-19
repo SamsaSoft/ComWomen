@@ -59,5 +59,11 @@ namespace Core.Services
                 throw new KeyNotFoundException("This language is not in the database");
             return lang.LanguageCode;
         }
+
+        public async Task<IEnumerable<Media>> GetAll() =>
+            await _context.Medias
+                    .Include(x => x.Author)
+                    .Include(x => x.MediaTranslations)
+                    .ToListAsync();
     }
 }

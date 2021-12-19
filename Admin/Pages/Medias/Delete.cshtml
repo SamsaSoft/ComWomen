@@ -45,7 +45,18 @@
                     <span class="form-control">@Model.Media.MediaTranslations[i].Description</span>
 
                     <label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label d-block"></label>
-                    <img class="img-thumbnail img-fluid" asp-for="@Model.Media.MediaTranslations[i].Url" src="\images\@Model.Media.MediaTranslations[i].Url" alt="@Model.Media.MediaTranslations[i].Url" />
+                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Photo)
+                    {
+                        <img class="img-fluid" src="~/images/@Model.Media[Model.ActiveLanguage].Url" />
+                    }
+                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Audio)
+                    {
+                        <audio src="~/audio/@Model.Media[Model.ActiveLanguage].Url" controls></audio>
+                    }
+                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Video)
+                    {
+                        <video src="~/video/@Model.Media[Model.ActiveLanguage].Url" controls></video>
+                    }
                 </div>
             }
         </div>

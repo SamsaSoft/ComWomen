@@ -43,11 +43,11 @@
                         <span asp-validation-for="@Model.Media.MediaTranslations[i].Title" class="text-danger"></span>
 
                         <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
-                        <textarea rows="3" asp-for="@Model.Media.MediaTranslations[i].Description" class="form-control" ></textarea>
+                        <textarea rows="3" asp-for="@Model.Media.MediaTranslations[i].Description" class="form-control"></textarea>
                         <span asp-validation-for="@Model.Media.MediaTranslations[i].Description" class="text-danger"></span>
 
                         <input hidden id='@($"url_file_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' value="@Model.Media.MediaTranslations[i].Url" />
-                        <label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label"></label>
+                        @*<label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label"></label>*@
                         <input asp-for="@Model.Files[Model.Media.MediaTranslations[i].LanguageId]" type="file" class="form-control" accept="audio/*,video/*,image/*,MIME_type" id='@($"select_file_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' />
                         <input hidden name="Files[@Model.Media.MediaTranslations[i].LanguageId].Key" value="@Model.Media.MediaTranslations[i].LanguageId" />
                         <span asp-validation-for="@Model.Media.MediaTranslations[i].Url" class="text-danger"></span>
@@ -63,60 +63,42 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/media.js"></script>
     <script>
         let langs = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
 
-        function clearall()
-        {
-            for (var item of langs)
-            {
-                $(`#lang_nav_${item}`).removeClass("active");
-                $(`#lang_body_${item}`).attr("hidden", "");
-            }
-        };
-
-        function getactivetab() {
-            for (var item of langs)
-            {
-                if($(`#lang_nav_${item}`).hasClass("active"))
-                    return item;
-            }
-        };
-
-        function initimage(lang) {
+        function initmedia(cls, lang, langs) {
             var hidenurl = $(`#url_file_${lang}`).get();
             var url = hidenurl[0].value;
-                if (url != "") {
-                    updateimage(`/images/${url}`);
-                }
+            if (url != "") {
+                updatemedia(cls, `/images/${url}`, lang);
+            }
         };
 
-        function updateimage(url)
+        function updatemedia(cls, url, lang)
         {
-            var preview = $(`#preview_file_${getactivetab()}`);
+            var preview = $(`#preview_file_${lang}`);
             preview.children().remove();
-            var img = $("<img>");
-            img.attr("src", url);
-            img.addClass("img-thumbnail img-fluid m-3");
-            preview.prepend(img);
+            var htmlTag = createmediafromclass(cls, url);
+            preview.prepend(htmlTag);
         }
 
         $(document).ready(function () {
-            clearall();
+            clearall(langs);
             $('@($"#lang_nav_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').addClass("active");
             $('@($"#lang_body_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').removeAttr("hidden");
             @foreach (var item in Model.ActiveLanguages.Select(Model.LanguageIdToCode))
             {
-                @:initimage('@item');
+                @:initmedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', '@item', langs);
                 @:$('@($"#lang_nav_{item}")').on("click", function()
                 @:{
-                    @:clearall();
+                    @:clearall(langs);
                     @:$('@($"#lang_nav_{item}")').addClass("active");
                     @:$('@($"#lang_body_{item}")').removeAttr("hidden");
-                    @:initimage('@item');
+                    @:initmedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', '@item', langs);
                 @:});
                 @:$('@($"#select_file_{item}")').on('change', function () {
-                    @:updateimage(window.URL.createObjectURL(this.files[0]));
+                    @:updatemedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', window.URL.createObjectURL(this.files[0]), langs);
                 @:});
             }
         });

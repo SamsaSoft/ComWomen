@@ -12,19 +12,29 @@
 </div>
 <div class="row">
     <div class="col">
-        <div class="card">
-            <div class="card-header">
-                <ul class="nav nav-pills card-header-pills">
-                    @foreach (var item in Model.ActiveLanguages)
-                    {
-                        var strItem = Model.LanguageIdToCode(item);
-                        <li class="nav-item">
-                            <a id='@($"lang_nav_{strItem}")' class="nav-link" aria-current="true" href="#">@strItem</a>
-                        </li>
-                    }
-                </ul>
-            </div>
-            <form method="post" class="text-center" enctype="multipart/form-data">
+        <form method="post" class="text-center" enctype="multipart/form-data" id="post_form">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <ul class="nav nav-pills card-header-pills">
+                        @foreach (var item in Model.ActiveLanguages)
+                        {
+                            var strItem = Model.LanguageIdToCode(item);
+                            <li class="nav-item">
+                                <a id='@($"lang_nav_{strItem}")' class="nav-link" aria-current="true" href="#">@strItem</a>
+                            </li>
+                        }
+                    </ul>
+                    <div class="btn-group" role="group" aria-label="Select media type">
+                        <input type="radio" class="btn-check" name="btnradio" id="image" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="image">Image</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="audio" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="audio">Audio</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="video" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="video">Video</label>
+                    </div>
+                </div>
                 <input hidden asp-for="@Model.Media.MediaTypeId" />
                 @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
                 {
@@ -38,8 +48,9 @@
                         <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
                         <textarea type="text" rows="3" asp-for="@Model.Media.MediaTranslations[i].Description" class="form-control"></textarea>
                         <span asp-validation-for="@Model.Media.MediaTranslations[i].Description" class="text-danger"></span>
+                        <br />
 
-                        <label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label"></label>
+                        @*<label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label"></label>*@
                         <input asp-for="@Model.Files[Model.Media.MediaTranslations[i].LanguageId]" type="file" class="form-control" accept="audio/*,video/*,image/*,MIME_type" id='@($"select_file_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' />
                         <input hidden name="Files[@Model.Media.MediaTranslations[i].LanguageId].Key" value="@Model.Media.MediaTranslations[i].LanguageId" />
                         <span asp-validation-for="@Model.Media.MediaTranslations[i].Url" class="text-danger"></span>
@@ -48,54 +59,43 @@
                         </div>
                     </div>
                 }
-                <input type="submit" class="btn btn-primary m-3" value="Create" />
-            </form>
-        </div>
+                <input type="submit" class="btn btn-primary m-3" value="Create" id="submit_create" />
+            </div>
+        </form>
     </div>
 </div>
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/media.js"></script>
     <script>
-        let values = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
-        function clearall()
-        {
-            for(var item of values)
-            {
-                $(`#lang_nav_${item}`).removeClass("active");
-                $(`#lang_body_${item}`).attr("hidden", "");
-            }
-        };
-
-        function getactivetab() {
-            for(var item of values)
-            {
-                if($(`#lang_nav_${item}`).hasClass("active"))
-                    return item;
-            }
-        };
-
+        $.validator.setDefaults({ ignore: '' });
+        let langs = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
         $(document).ready(function () {
-            clearall();
+            $('#submit_create').attr('disabled', true);
+            $('#post_form').on('change', function () {
+                $('#submit_create').attr('disabled', !$('#post_form').valid());
+            });
+            clearall(langs);
             $('@($"#lang_nav_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').addClass("active");
             $('@($"#lang_body_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').removeAttr("hidden");
             @foreach (var item in Model.ActiveLanguages.Select(Model.LanguageIdToCode))
             {
                 @:$('@($"#lang_nav_{item}")').on("click", function()
                 @:{
-                    @:clearall();
+                    @:clearall(langs);
                     @:$('@($"#lang_nav_{item}")').addClass("active");
                     @:$('@($"#lang_body_{item}")').removeAttr("hidden");
                 @:});
                 @:$('@($"#select_file_{item}")').on('change', function () {
-                    @:var preview = $(`#preview_file_${getactivetab()}`);
+                    @:var preview = $(`#preview_file_${getactivetab(langs)}`);
                     @:preview.children().remove();
-                    @:var img = $("<img>");
-                    @:img.attr("src", window.URL.createObjectURL(this.files[0]));
-                    @:img.addClass("img-fluid p-3");
-                    @:preview.prepend(img);
+                    @:var mediaType = this.files[0].type;
+                    @:var mediaClass = mediaType.split('/')[0];
+                    @:var htmlTag = createmediafromclass(mediaClass, window.URL.createObjectURL(this.files[0]));
+                    @:preview.prepend(htmlTag);
                 @:});
             }
         });
     </script>
-    <partial name="_ValidationScriptsPartial" />
 }

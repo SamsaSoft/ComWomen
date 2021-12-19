@@ -19,7 +19,7 @@ namespace Admin.Pages.Medias
         public async Task<IActionResult> OnGetAsync()
         {
             ActiveLanguage = LanguageEnum.ky;
-            Medias = await _mediaService.GetAllWithType(Core.Enums.MediaTypeEnum.Photo);
+            Medias = await _mediaService.GetAll();
             return Page();
         }
     }

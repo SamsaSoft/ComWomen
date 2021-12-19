@@ -10,5 +10,6 @@ namespace Core.Interfaces
         Task<Media> Upload(Media media);
         Task Update(Media media);
         string LanguageIdToCode(LanguageEnum language);
+        Task<IEnumerable<Media>> GetAll();
     }
 }

@@ -36,6 +36,7 @@ namespace Admin.Pages.Medias
 
         public async Task<IActionResult> OnPost()
         {
+            Media.MediaTypeId = ClassNameToMediaTypeId(GetClass());
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -47,16 +48,25 @@ namespace Admin.Pages.Medias
             return RedirectToPage("index");
         }
 
+        string GetClass() 
+        {
+            var first = Files.FirstOrDefault(x => x.Value != null);
+            if (first.Value == null)
+                return "error";
+            var mimeType = first.Value.ContentType;
+            return mimeType.Split("/").First();
+        }
+
         private async Task ProcessingAttachFiles()
         {
             var wwwPath = _webHost.WebRootPath;
-            var mediaPath = Path.Combine(wwwPath, "images");
+            var classMedia = GetClass();
+            var mediaPath = Path.Combine(wwwPath, classMedia);
             CreateDirectoryIfNotExists(mediaPath);
             foreach (var item in ActiveLanguages)
             {
                 if (Files[item] != null)
                 {
-                    //TODO fix empty file
                     var filePath = Path.Combine(mediaPath, Files[item].FileName);
                     Media[item].Url = Files[item].FileName;
                     if (System.IO.File.Exists(filePath))

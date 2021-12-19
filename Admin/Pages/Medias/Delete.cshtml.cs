@@ -8,7 +8,7 @@ namespace Admin.Pages.Medias
     public class DeleteModel : BaseMediaPageModel
     {
         private readonly IWebHostEnvironment _webHost;
-
+        public LanguageEnum ActiveLanguage { get; set; }
         public DeleteModel(IMediaService mediaService, IWebHostEnvironment webHost):base(mediaService)
         {
             _webHost = webHost;
@@ -23,6 +23,7 @@ namespace Admin.Pages.Medias
         {
             try
             {
+                ActiveLanguage = LanguageEnum.ru;
                 Media = await _mediaService.GetById(MediaId);
                 return Page();
             }
