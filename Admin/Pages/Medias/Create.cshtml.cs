@@ -36,11 +36,16 @@ namespace Admin.Pages.Medias
 
         public async Task<IActionResult> OnPost()
         {
-            Media.MediaTypeId = ClassNameToMediaTypeId(GetClass());
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+            if (!CheckAttachFiles())
+            {
+                ModelState.TryAddModelError("MediaTranslation_url", "At least one file must be selected and all selected files must be of the same type");
+                return Page();
+            }
+            Media.MediaTypeId = ClassNameToMediaTypeId(GetClass());
             Media.AuthorId = GetCurrentUserId();
             Media.CreatedAt = DateTime.UtcNow;
             await ProcessingAttachFiles();
@@ -48,11 +53,27 @@ namespace Admin.Pages.Medias
             return RedirectToPage("index");
         }
 
+        private bool CheckAttachFiles()
+        {
+            if (Files.Values.All(x => x == null))
+            {
+                return false;
+            }
+            if (Files.Values
+                .Where(x => x != null)
+                .GroupBy(x => x.ContentType.Split("/").First())
+                .Count() > 1)
+            {
+                return false;
+            }
+            return true;
+        }
+
         string GetClass() 
         {
             var first = Files.FirstOrDefault(x => x.Value != null);
             if (first.Value == null)
-                return "error";
+                throw new Exception("Internal error");
             var mimeType = first.Value.ContentType;
             return mimeType.Split("/").First();
         }
@@ -75,6 +96,10 @@ namespace Admin.Pages.Medias
                     }
                     using var stream = new FileStream(filePath, FileMode.CreateNew);
                     await Files[item].CopyToAsync(stream);
+                }
+                else 
+                {
+                    Media[item].Url = Files.Values.First(x=> x != null).FileName;
                 }
             }
         }
