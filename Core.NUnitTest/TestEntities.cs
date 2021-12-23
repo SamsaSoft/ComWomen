@@ -59,7 +59,7 @@ namespace Core.NUnitTest
                         Description = "Description",
                         Title = "Title",
                         Url = "https://images.com/image?id=1",
-                        LanguageId = Enums.LanguageEnum.en,
+                        LanguageId = Enums.LanguageEnum.ky,
                     },
                     new MediaTranslation
                     {
@@ -81,7 +81,7 @@ namespace Core.NUnitTest
             Assert.AreEqual(1, media?.Id);
             CollectionAssert.IsNotEmpty(media?.MediaTranslations);
             CollectionAssert.IsSubsetOf(
-                new[] { Enums.LanguageEnum.en, Enums.LanguageEnum.ru },
+                new[] { Enums.LanguageEnum.ky, Enums.LanguageEnum.ru },
                 media?.MediaTranslations.Select(x=>x.LanguageId));
         }
 
@@ -97,7 +97,7 @@ namespace Core.NUnitTest
                         Description = "Description",
                         Title = "Title",
                         Url = "https://images.com/image?id=1",
-                        LanguageId = Enums.LanguageEnum.en,
+                        LanguageId = Enums.LanguageEnum.ky,
                     },
                     new MediaTranslation
                     {

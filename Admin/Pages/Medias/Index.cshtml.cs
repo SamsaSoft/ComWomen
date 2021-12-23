@@ -1,7 +1,5 @@
-using Admin.Common;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Admin.Pages.Medias
 {

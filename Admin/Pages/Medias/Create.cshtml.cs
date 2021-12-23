@@ -1,10 +1,5 @@
-using Admin.Common;
-using Core.Enums;
 using Core.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
 
 namespace Admin.Pages.Medias
 {
