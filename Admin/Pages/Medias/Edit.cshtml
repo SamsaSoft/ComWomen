@@ -66,22 +66,46 @@
     <script src="~/js/media.js"></script>
     <script>
         let langs = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
+        let directoryDictonaries = @(Json.Serialize(Model.MediaDirectoryDictionary));
 
         function initmedia(cls, lang) {
-            var hidenurl = $(`#url_file_${lang}`).get();
-            var url = hidenurl[0].value;
+            var inputFile = $(`#select_file_${lang}`).get();
+            var url = "";
+            if (inputFile[0].files[0] != null) {
+                url = window.URL.createObjectURL(inputFile[0].files[0]);
+            }
+            else
+            {
+                var hidenurl = $(`#url_file_${lang}`).get();
+                url = `/${directoryDictonaries[cls]}/${hidenurl[0].value}`;
+            }
             if (url != "") {
-                updatemedia(cls, `/${cls}/${url}`, lang);
+                updatemedia(cls, url, lang);
             }
         };
 
-        function updatemedia(cls, url, lang)
+        function checkMediaClass(mediaClass, file) {
+            if (file === 'undefined' || file == null) {
+                return true;
+            }
+            var mediaClassFile = file.type.split('/')[0];
+            return mediaClass == mediaClassFile;
+        }
+
+        function updatemedia(cls, url, lang, file)
         {
             var preview = $(`#preview_file_${lang}`);
             preview.children().remove();
+            if (!checkMediaClass(cls, file)) {
+                preview.prepend("<p>This file type cannot be selected</p>");
+                return false;
+            }
             var htmlTag = createmediafromclass(cls, url);
             preview.prepend(htmlTag);
+            return true;
         }
+
+
 
         $(document).ready(function () {
             clearall(langs);
@@ -98,7 +122,9 @@
                     @:initmedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', '@item');
                 @:});
                 @:$('@($"#select_file_{item}")').on('change', function () {
-                    @:updatemedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', window.URL.createObjectURL(this.files[0]), '@item');
+                    @:if (!updatemedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', window.URL.createObjectURL(this.files[0]), '@item', this.files[0])) {
+                        @:this.value = this.defaultValue;
+                    @:};
                 @:});
             }
         });

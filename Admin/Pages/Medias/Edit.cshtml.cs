@@ -9,7 +9,7 @@ namespace Admin.Pages.Medias
     {
         private readonly IWebHostEnvironment _webHost;
 
-        public EditModel(IMediaService mediaService, IWebHostEnvironment webHost):base(mediaService)
+        public EditModel(IMediaService mediaService, IWebHostEnvironment webHost) : base(mediaService)
         {
             _webHost = webHost;
         }
@@ -18,7 +18,12 @@ namespace Admin.Pages.Medias
         [BindProperty]
         public Dictionary<LanguageEnum, IFormFile> Files { get; set; }
 
-        public IEnumerable<LanguageEnum> ActiveLanguages => Media.MediaTranslations.Select(x=>x.LanguageId);
+        public IEnumerable<LanguageEnum> ActiveLanguages => Media.MediaTranslations.Select(x => x.LanguageId);
+
+        public IDictionary<string, string> MediaDirectoryDictionary => Enum
+            .GetValues<MediaTypeEnum>()
+            .Select(x => MediaTypeIdToClassName(x))
+            .ToDictionary(x => x, x => ClassNameToDirectory(x));
 
         [BindProperty(SupportsGet = true)]
         public int MediaId { get; set; }
@@ -63,13 +68,15 @@ namespace Admin.Pages.Medias
         private async Task ProcessingAttachFiles()
         {
             var wwwPath = _webHost.WebRootPath;
-            var mediaPath = Path.Combine(wwwPath, "images");
+            var classMedia = MediaTypeIdToClassName(Media.MediaTypeId);
+            var mediaPath = Path.Combine(wwwPath, ClassNameToDirectory(classMedia));
             foreach (var item in ActiveLanguages)
             {
                 if (Files[item] != null)
                 {
-                    var filePath = Path.Combine(mediaPath, Files[item].FileName);
-                    Media[item].Url = Files[item].FileName;
+                    var fileName = await GenerateNameFile(Files[item]);
+                    var filePath = Path.Combine(mediaPath, fileName);
+                    Media[item].Url = fileName;
                     if (System.IO.File.Exists(filePath))
                     {
                         continue;

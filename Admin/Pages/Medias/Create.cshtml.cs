@@ -82,14 +82,15 @@ namespace Admin.Pages.Medias
         {
             var wwwPath = _webHost.WebRootPath;
             var classMedia = GetClass();
-            var mediaPath = Path.Combine(wwwPath, classMedia);
+            var mediaPath = Path.Combine(wwwPath, ClassNameToDirectory(classMedia));
             CreateDirectoryIfNotExists(mediaPath);
             foreach (var item in ActiveLanguages)
             {
                 if (Files[item] != null)
                 {
-                    var filePath = Path.Combine(mediaPath, Files[item].FileName);
-                    Media[item].Url = Files[item].FileName;
+                    var fileName = await GenerateNameFile(Files[item]);
+                    var filePath = Path.Combine(mediaPath, fileName);
+                    Media[item].Url = fileName;
                     if (System.IO.File.Exists(filePath))
                     {
                         continue;
@@ -97,10 +98,13 @@ namespace Admin.Pages.Medias
                     using var stream = new FileStream(filePath, FileMode.CreateNew);
                     await Files[item].CopyToAsync(stream);
                 }
-                else 
-                {
-                    Media[item].Url = Files.Values.First(x=> x != null).FileName;
-                }
+            }
+            foreach (var item in Media.MediaTranslations.Where(x => string.IsNullOrEmpty(x.Url)))
+            {
+                item.Url = Media.MediaTranslations
+                    .Where(x =>!string.IsNullOrEmpty(x.Url))
+                    .Select(x=>x.Url)
+                    .FirstOrDefault();
             }
         }
 

@@ -15,7 +15,7 @@ function getactivetab(langs) {
 function createimagefromurl(url) {
     var htmlTag = $("<img>");
     htmlTag.attr("src", url);
-    htmlTag.addClass("img-fluid p-3");
+    htmlTag.addClass("form-control img-fluid p-3");
     return htmlTag;
 }
 

@@ -3,7 +3,12 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+@{
+    string GetMediaPath(Media media)
+    {
+        return Model.ClassNameToDirectory(Model.MediaTypeIdToClassName(media.MediaTypeId)) + '/' + media[Model.ActiveLanguage].Url;
+    }
+}
 <div class="card">
     <div class="card-header">
         <div class="row">
@@ -28,12 +33,12 @@
                             <div class="col-2 ">
                                 @if (item.MediaTypeId == MediaTypeEnum.Photo)
                                 {
-                                    <img class="img-fluid" src="~/images/@item[Model.ActiveLanguage].Url" />
+                                    <img class="img-fluid" src="~/@GetMediaPath(item)" />
                                 }
                                 @if (item.MediaTypeId == MediaTypeEnum.Audio)
                                 {
                                     <div>
-                                        <audio src="~/audio/@item[Model.ActiveLanguage].Url"></audio>
+                                        <audio src="~/@GetMediaPath(item)"></audio>
                                         <button class="form-control" onclick="audioClick(this)">
                                             <img style="max-width:64px" class="img-fluid" src="~/controls/Play_-_The_Noun_Project.svg" />
                                         </button>
@@ -41,7 +46,7 @@
                                 }
                                 @if (item.MediaTypeId == MediaTypeEnum.Video)
                                 {
-                                    <video class="img-fluid" src="~/video/@item[Model.ActiveLanguage].Url" controls></video>
+                                    <video class="img-fluid" src="~/@GetMediaPath(item)" controls></video>
                                 }
                             </div>
                             <div class="col-8 bg-light top-0 text-start">
