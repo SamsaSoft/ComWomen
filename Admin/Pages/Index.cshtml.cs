@@ -1,4 +1,4 @@
-﻿using Admin.Controllers;
+﻿using Admin.Common;
 using Core.DataAccess.Entities;
 using Core.Enums;
 using Core.Interfaces;

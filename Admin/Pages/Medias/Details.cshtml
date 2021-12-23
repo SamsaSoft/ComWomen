@@ -1,0 +1,92 @@
+﻿@page "{mediaid}"
+@model Admin.Pages.Medias.DetailsModel
+@{
+    ViewData["Title"] = "Details";
+}
+@{
+    string GetMediaPath(int index)
+    {
+        return Model.ClassNameToDirectory(Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)) + '/' + Model.Media.MediaTranslations[index].Url;
+    }
+}
+<h1>Details</h1>
+
+<div class="row">
+    <div class="col">
+        <div class="card text-center">
+            <div class="card-header">
+                <ul class="nav nav-pills card-header-pills">
+                    @foreach (var item in Model.ActiveLanguages)
+                    {
+                        var strItem = Model.LanguageIdToCode(item);
+                        <li class="nav-item">
+                            <a id='@($"lang_nav_{strItem}")' class="nav-link" aria-current="true" href="#">@strItem</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <input hidden asp-for="@Model.Media.MediaTypeId" />
+            @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
+            {
+                <div id='@($"lang_body_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
+                    <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
+                    <span asp-for="@Model.Media.MediaTranslations[i].Title" class="form-control">@Model.Media.MediaTranslations[i].Title</span>
+
+                    <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
+                    <textarea rows="3" class="form-control">@Model.Media.MediaTranslations[i].Description</textarea>
+
+                    <label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label d-block"></label>
+                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Photo)
+                    {
+                        <img class="img-fluid" src="~/@GetMediaPath(i)" />
+                    }
+                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Audio)
+                    {
+                        <audio src="~/@GetMediaPath(i)" controls></audio>
+                    }
+                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Video)
+                    {
+                        <video class="form-control" src="~/@GetMediaPath(i)" controls></video>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        let values = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
+        function clearall()
+        {
+            for(var item of values)
+            {
+                $(`#lang_nav_${item}`).removeClass("active");
+                $(`#lang_body_${item}`).attr("hidden", "");
+            }
+        };
+
+        function getactivetab() {
+            for(var item of values)
+            {
+                if($(`#lang_nav_${item}`).hasClass("active"))
+                    return item;
+            }
+        };
+
+        $(document).ready(function () {
+            clearall();
+            $('@($"#lang_nav_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').addClass("active");
+            $('@($"#lang_body_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').removeAttr("hidden");
+            @foreach (var item in Model.ActiveLanguages.Select(Model.LanguageIdToCode))
+            {
+                @:$('@($"#lang_nav_{item}")').on("click", function()
+                @:{
+                    @:clearall();
+                    @:$('@($"#lang_nav_{item}")').addClass("active");
+                    @:$('@($"#lang_body_{item}")').removeAttr("hidden");
+                @:});
+            }
+        });
+    </script>
+}

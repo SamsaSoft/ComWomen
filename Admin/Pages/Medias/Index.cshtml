@@ -1,0 +1,81 @@
+﻿@page
+@model Admin.Pages.Medias.IndexModel
+@{
+    ViewData["Title"] = "Index";
+}
+@{
+    string GetMediaPath(Media media)
+    {
+        return Model.ClassNameToDirectory(Model.MediaTypeIdToClassName(media.MediaTypeId)) + '/' + media[Model.ActiveLanguage].Url;
+    }
+}
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-10">
+                <h1>Medias</h1>
+            </div>
+            <div class="col-2">
+                <a asp-page="Create" class="btn btn-primary">Create</a>
+            </div>
+        </div>
+    </div>
+    @foreach (var item in Model.Medias)
+    {
+        <div class="row text-center mt-1 mb-1">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header text-center text-primary p-0 text-uppercase">
+                        <h5>@item[Model.ActiveLanguage].Title</h5>
+                    </div>
+                    <div class="card-body p-0 justify-content-center">
+                        <div class="row row-cols-3 align-items-center">
+                            <div class="col-2 ">
+                                @if (item.MediaTypeId == MediaTypeEnum.Photo)
+                                {
+                                    <img class="img-fluid" src="~/@GetMediaPath(item)" />
+                                }
+                                @if (item.MediaTypeId == MediaTypeEnum.Audio)
+                                {
+                                    <div>
+                                        <audio src="~/@GetMediaPath(item)"></audio>
+                                        <button class="form-control" onclick="audioClick(this)">
+                                            <img style="max-width:64px" class="img-fluid" src="~/controls/Play_-_The_Noun_Project.svg" />
+                                        </button>
+                                    </div>
+                                }
+                                @if (item.MediaTypeId == MediaTypeEnum.Video)
+                                {
+                                    <video class="img-fluid" src="~/@GetMediaPath(item)" controls></video>
+                                }
+                            </div>
+                            <div class="col-8 bg-light top-0 text-start">
+                                <textarea rows="3" class="form-control" readonly>@item[Model.ActiveLanguage].Description</textarea>
+                            </div>
+                            <div class="col-2">
+                                <a asp-page="Details" asp-route-mediaid="@item.Id" class="btn btn-primary p-0 m-1 d-block" style="font-size:small;">Details</a>
+                                <a asp-page="Edit" asp-route-mediaid="@item.Id" class="btn btn-primary p-0 m-1 d-block" style="font-size:small;">Edit</a>
+                                <a asp-page="Delete" asp-route-mediaid="@item.Id" class="btn btn-danger p-0 m-1 d-block" style="font-size:small;">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts
+{
+    <script>
+        function audioClick(self) {
+            var audio = $(self).parent().find("audio").get();
+            if (audio[0].paused) {
+                audio[0].play();
+            }
+            else {
+                audio[0].pause();
+            }
+        }
+    </script>
+}

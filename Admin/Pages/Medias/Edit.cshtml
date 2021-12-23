@@ -1,0 +1,133 @@
+﻿@page "{mediaid}"
+@model Admin.Pages.Medias.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<div class="text-danger text-opacity-75" asp-validation-summary="All">
+
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <ul class="nav nav-pills card-header-pills">
+                    @foreach (var item in Model.ActiveLanguages)
+                    {
+                        var strItem = Model.LanguageIdToCode(item);
+                        <li class="nav-item">
+                            <a id='@($"lang_nav_{strItem}")' class="nav-link" aria-current="true" href="#">@strItem</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <form method="post" class="text-center" enctype="multipart/form-data">
+                <input hidden asp-for="@Model.Media.MediaTypeId" />
+                <input hidden asp-for="@Model.Media.AuthorId" />
+                <input hidden asp-for="@Model.Media.CreatedAt" />
+                <input hidden asp-for="@Model.Media.Id" />
+                @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
+                {
+                    <div id='@($"lang_body_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
+                        <input hidden asp-for="@Model.Media.MediaTranslations[i].Id" />
+                        <input hidden asp-for="@Model.Media.MediaTranslations[i].LanguageId" />
+                        <input hidden asp-for="@Model.Media.MediaTranslations[i].MediaId" />
+                        <input hidden asp-for="@Model.Media.MediaTranslations[i].Url" />
+
+                        <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
+                        <input asp-for="@Model.Media.MediaTranslations[i].Title" class="form-control" />
+                        <span asp-validation-for="@Model.Media.MediaTranslations[i].Title" class="text-danger"></span>
+
+                        <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
+                        <textarea rows="3" asp-for="@Model.Media.MediaTranslations[i].Description" class="form-control"></textarea>
+                        <span asp-validation-for="@Model.Media.MediaTranslations[i].Description" class="text-danger"></span>
+
+                        <input hidden id='@($"url_file_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' value="@Model.Media.MediaTranslations[i].Url" />
+                        @*<label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label"></label>*@
+                        <input asp-for="@Model.Files[Model.Media.MediaTranslations[i].LanguageId]" type="file" class="form-control" accept="@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)/*,MIME_type" id='@($"select_file_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' />
+                        <input hidden name="Files[@Model.Media.MediaTranslations[i].LanguageId].Key" value="@Model.Media.MediaTranslations[i].LanguageId" />
+                        <span asp-validation-for="@Model.Media.MediaTranslations[i].Url" class="text-danger"></span>
+                        <div id='@($"preview_file_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="preview">
+                            <p>No files currently selected for upload</p>
+                        </div>
+                    </div>
+                }
+                <input type="submit" class="btn btn-primary m-3" value="Update" />
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/media.js"></script>
+    <script>
+        let langs = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
+        let directoryDictonaries = @(Json.Serialize(Model.MediaDirectoryDictionary));
+
+        function initmedia(cls, lang) {
+            var inputFile = $(`#select_file_${lang}`).get();
+            var url = "";
+            if (inputFile[0].files[0] != null) {
+                url = window.URL.createObjectURL(inputFile[0].files[0]);
+            }
+            else
+            {
+                var hidenurl = $(`#url_file_${lang}`).get();
+                url = `/${directoryDictonaries[cls]}/${hidenurl[0].value}`;
+            }
+            if (url != "") {
+                updatemedia(cls, url, lang);
+            }
+        };
+
+        function checkMediaClass(mediaClass, file) {
+            if (file === 'undefined' || file == null) {
+                return true;
+            }
+            var mediaClassFile = file.type.split('/')[0];
+            return mediaClass == mediaClassFile;
+        }
+
+        function updatemedia(cls, url, lang, file)
+        {
+            var preview = $(`#preview_file_${lang}`);
+            preview.children().remove();
+            if (!checkMediaClass(cls, file)) {
+                preview.prepend("<p>This file type cannot be selected</p>");
+                return false;
+            }
+            var htmlTag = createmediafromclass(cls, url);
+            preview.prepend(htmlTag);
+            return true;
+        }
+
+
+
+        $(document).ready(function () {
+            clearall(langs);
+            $('@($"#lang_nav_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').addClass("active");
+            $('@($"#lang_body_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').removeAttr("hidden");
+            @foreach (var item in Model.ActiveLanguages.Select(Model.LanguageIdToCode))
+            {
+                @:initmedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', '@item');
+                @:$('@($"#lang_nav_{item}")').on("click", function()
+                @:{
+                    @:clearall(langs);
+                    @:$('@($"#lang_nav_{item}")').addClass("active");
+                    @:$('@($"#lang_body_{item}")').removeAttr("hidden");
+                    @:initmedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', '@item');
+                @:});
+                @:$('@($"#select_file_{item}")').on('change', function () {
+                    @:if (!updatemedia('@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)', window.URL.createObjectURL(this.files[0]), '@item', this.files[0])) {
+                        @:this.value = this.defaultValue;
+                    @:};
+                @:});
+            }
+        });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

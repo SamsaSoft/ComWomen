@@ -15,4 +15,10 @@ html {
 
 body {
   margin-bottom: 60px;
+  margin-top: 70px;
+}
+
+.lng-button
+{
+    background-color:lightblue;
 }
