@@ -21,9 +21,17 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/Medias");
-});
+}).AddViewLocalization();
 
-builder.Services.RegisterGlobalizationService();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Language");
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = Enum.GetNames<LanguageEnum>().Select(x => new CultureInfo(x)).ToList();
+    options.DefaultRequestCulture = new RequestCulture(LanguageEnum.ru.ToString());
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
 
 // DI
 builder.Services.AddScoped<IMediaService, MediaService>();
@@ -55,9 +63,10 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.UseEndpoints(endpoints =>
 {
+    endpoints.MapControllerRoute(name: "language", pattern: "language");
     endpoints.MapPost("/language", async context =>
     {
-        var culture = context.Request.Query["culture"];
+        var culture = context.Request.Form["culture"];
         var returnUrl = context.Request.Query["returnUrl"];
         context.Response.Cookies.Append(
             CookieRequestCultureProvider.DefaultCookieName,

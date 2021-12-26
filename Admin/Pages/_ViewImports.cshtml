@@ -1,5 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Admin
 @using Core.DataAccess
+@using Microsoft.Extensions.Localization
 @namespace Admin.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@inject IStringLocalizer<AdminResource> Localizer

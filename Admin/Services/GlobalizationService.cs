@@ -26,7 +26,7 @@ namespace Admin.Services
 
         public IEnumerable<CultureInfo> SupportedCultures => Enum.GetNames<LanguageEnum>().Select(x => new CultureInfo(x)).ToList();
 
-        public CultureInfo ActiveUiCulture { get => requestCulture?.RequestCulture.UICulture; set => ; }
+        public CultureInfo ActiveUiCulture { get => requestCulture?.RequestCulture.UICulture; }
     }
 
     public static class GlobalizationServiceExtensions 
@@ -42,7 +42,7 @@ namespace Admin.Services
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
-            services.AddScoped<IGlobalizationService, GlobalizationService>();
+            //services.AddScoped<IGlobalizationService, GlobalizationService>();
             return services;
         }        
     }

@@ -12,6 +12,6 @@ namespace Core.Interfaces
         string this[int key] { get; }
         string this[string key] { get; }
         IEnumerable<CultureInfo> SupportedCultures { get; }
-        CultureInfo ActiveUiCulture { get; set; }
+        CultureInfo ActiveUiCulture { get; }
     }
 }
