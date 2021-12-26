@@ -20,25 +20,16 @@
                         {
                             var strItem = Model.LanguageIdToCode(item);
                             <li class="nav-item">
-                                <a id='@($"lang_nav_{strItem}")' class="nav-link" aria-current="true" href="#">@strItem</a>
+                                <a id='@($"lang_nav_{strItem}")' class="nav-link lang_nav" aria-current="true" href="#">@strItem</a>
                             </li>
                         }
                     </ul>
-                    <div class="btn-group" role="group" aria-label="Select media type">
-                        <input type="checkbox" class="btn-check" name="btncheck" id="image" onchange="UpdateMediaType()" autocomplete="off" checked>
-                        <label class="btn btn-outline-primary" for="image">Image</label>
-
-                        <input type="checkbox" class="btn-check" name="btncheck" id="audio" onchange="UpdateMediaType()" autocomplete="off" checked>
-                        <label class="btn btn-outline-primary" for="audio">Audio</label>
-
-                        <input type="checkbox" class="btn-check" name="btncheck" id="video" onchange="UpdateMediaType()" autocomplete="off" checked>
-                        <label class="btn btn-outline-primary" for="video">Video</label>
-                    </div>
+               
                 </div>
                 <input hidden asp-for="@Model.Media.MediaTypeId" />
                 @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
                 {
-                    <div id='@($"lang_body_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
+                    <div id='@($"lang_body_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="lang_body card-body">
                         <input hidden asp-for="@Model.Media.MediaTranslations[i].LanguageId" />
 
                         <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
@@ -49,9 +40,8 @@
                         <textarea type="text" rows="3" asp-for="@Model.Media.MediaTranslations[i].Description" class="form-control"></textarea>
                         <span asp-validation-for="@Model.Media.MediaTranslations[i].Description" class="text-danger"></span>
                         <br />
-
-                        @*<label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label"></label>*@
-                        <input asp-for="@Model.Files[Model.Media.MediaTranslations[i].LanguageId]" type="file" class="form-control" id='@($"select_file_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' />
+                            
+                        <input asp-for="@Model.Files[Model.Media.MediaTranslations[i].LanguageId]" type="file" class="form-control select_file" id='@($"select_file_{ Enum.GetName<LanguageEnum>(Model.Media.MediaTranslations[i].LanguageId)}")' />
                         <input hidden name="Files[@Model.Media.MediaTranslations[i].LanguageId].Key" value="@Model.Media.MediaTranslations[i].LanguageId" />
                         <span asp-validation-for="@Model.Media.MediaTranslations[i].Url" class="text-danger"></span>
                         <div id='@($"preview_file_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="preview">
@@ -74,46 +64,27 @@
 
         function setActiveMediaFilter(filterType)
         {
-            $('#image').removeAttr('checked');
-            $('#audio').removeAttr('checked');
-            $('#video').removeAttr('checked');
-            $(`#${filterType}`).attr('checked', true);
-            SetEnabledFilter(false);
+            selectedMediaTypes = {image: false, audio: false, video: false};
+            selectedMediaTypes[filterType] = true;
             UpdateMediaType();
         }
 
-        function SetEnabledFilter(status)
-        {
-            if (status) {
-                $('#image').removeAttr('disabled');
-                $('#audio').removeAttr('disabled');
-                $('#video').removeAttr('disabled');
-                return;
-            }
-            $('#image').attr('disabled', '');
-            $('#audio').attr('disabled', '');
-            $('#video').attr('disabled', '');
-        }
-
         function UpdateMediaType() {
-            var imageCheckBox = $('#image').get();
-            var audioCheckBox = $('#audio').get();
-            var videoCheckBox = $('#video').get();
             var filter = '';
-            if (imageCheckBox[0].checked) {
+            if (selectedMediaTypes.image) {
                 filter += 'image/*,';
             }
-            if (audioCheckBox[0].checked) {
+            if (selectedMediaTypes.audio) {
                 filter += 'audio/*,';
             }
-            if (videoCheckBox[0].checked) {
+            if (selectedMediaTypes.video) {
                 filter += 'video/*,';
             }
             if (filter != "") {
                 filter = filter.substring(0, filter.length - 1);
             }
             //var filter = 'audio/*,video/*,image/*,MIME_type';
-            $(`#select_file_${getactivetab(langs)}`).attr('accept', filter);
+            $('.select_file').attr('accept', filter);
         }
 
         function hasAttr(jobj, attr)
@@ -125,51 +96,45 @@
             return false;
         }
 
-        function checkMediaClass(mediaClass)
-        {
-            var imageCheckBox = $('#image');
-            if (hasAttr(imageCheckBox, 'disabled')) {
-                if (hasAttr($(`#${mediaClass}`), 'checked')) {
-                    return true;
-                }
-                return false;
-            }
-            return true;
-        }
-
         $(document).ready(function () {
             $('#submit_create').attr('disabled', true);
+            
             $('#post_form').on('change', function () {
                 $('#submit_create').attr('disabled', !$('#post_form').valid());
             });
-            clearall(langs);
-            $('@($"#lang_nav_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').addClass("active");
-            $('@($"#lang_body_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').removeAttr("hidden");
+            
+            clearLangInputs();
+            $(`#lang_nav_${activeFormLanguage}`).addClass("active");
+            $(`#lang_body_${activeFormLanguage}`).removeAttr("hidden");
             UpdateMediaType();
-            @foreach (var item in Model.ActiveLanguages.Select(Model.LanguageIdToCode))
-            {
-                @:$('@($"#lang_nav_{item}")').on("click", function()
-                @:{
-                    @:clearall(langs);
-                    @:$('@($"#lang_nav_{item}")').addClass("active");
-                    @:$('@($"#lang_body_{item}")').removeAttr("hidden");
-                    @:UpdateMediaType();
-                @:});
-                @:$('@($"#select_file_{item}")').on('change', function () {
-                    @:var preview = $(`#preview_file_${getactivetab(langs)}`);
-                    @:preview.children().remove();
-                    @:var mediaType = this.files[0].type;
-                    @:var mediaClass = mediaType.split('/')[0];
-                    @:if (!hasAttr($('#image'), 'disabled')) setActiveMediaFilter(mediaClass);
-                    @:if (!checkMediaClass(mediaClass)) {
-                        @:this.value = this.defaultValue;
-                        @:preview.prepend("<p>This file type cannot be selected</p>");
-                        @:return;
-                    @:}
-                    @:var htmlTag = createmediafromclass(mediaClass, window.URL.createObjectURL(this.files[0]));
-                    @:preview.prepend(htmlTag);
-                @:});
-            }
+
+            _languages.forEach(
+                function(lang, index, array){ 
+                    $(`#lang_nav_${lang}`).on("click", function()
+                        {
+                            clearLangInputs();
+                            $(`#lang_nav_${lang}`).addClass("active");
+                            $(`#lang_body_${lang}`).removeAttr("hidden");
+                            activeFormLanguage = lang;
+                            UpdateMediaType();
+                        });
+
+                    $(`#select_file_${lang}`).on("change", function(){ 
+                        var preview = $(`#preview_file_${lang}`);
+                        preview.children().remove();
+                        var mediaType = this.files[0].type;
+                        var mediaClass = mediaType.split('/')[0];
+                        setActiveMediaFilter(mediaClass);
+                        if (!selectedMediaTypes[mediaClass]) {
+                            this.value = this.defaultValue;
+                            preview.prepend("<p>This file type cannot be selected</p>");
+                            return;
+                        }
+                        var htmlTag = createmediafromclass(mediaClass, window.URL.createObjectURL(this.files[0]));
+                        preview.prepend(htmlTag);
+                });
+           });
+
         });
     </script>
 }

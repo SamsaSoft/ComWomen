@@ -1,8 +1,9 @@
-﻿function clearall(langs) {
-    for (var item of langs) {
-        $(`#lang_nav_${item}`).removeClass("active");
-        $(`#lang_body_${item}`).attr("hidden", "");
-    }
+﻿var selectedMediaTypes = { image: true, audio: true, video: true };
+var activeFormLanguage = 'ru';
+
+function clearLangInputs() {
+    $('.lang_nav').removeClass("active");
+    $('.lang_body').attr("hidden", "");
 };
 
 function getactivetab(langs) {

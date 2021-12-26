@@ -22,10 +22,11 @@ namespace Admin.Pages.Medias
             Media = new Media
             {
                 MediaTypeId = MediaTypeEnum.Photo,
-                MediaTranslations = CreateMediaTranslationsAllLanguages().ToList(),
+                MediaTranslations = new List<MediaTranslation>(ActiveLanguages.Select(x => new MediaTranslation { LanguageId = x }))
             };
-            Files = CreateFileDictionaryAllLanguages();
-            await Task.CompletedTask;
+
+            Files = new(ActiveLanguages.Select(x => new KeyValuePair<LanguageEnum, IFormFile>(x, null)));
+
             return Page();
         }
 
@@ -108,24 +109,6 @@ namespace Admin.Pages.Medias
             if (!Directory.Exists(mediaPath))
             {
                 Directory.CreateDirectory(mediaPath);
-            }
-        }
-
-        private Dictionary<LanguageEnum, IFormFile> CreateFileDictionaryAllLanguages()
-        {
-            var files = new Dictionary<LanguageEnum, IFormFile>();
-            foreach (var item in ActiveLanguages)
-            {
-                files.Add(item, null);
-            }
-            return files;
-        }
-
-        private IEnumerable<MediaTranslation> CreateMediaTranslationsAllLanguages()
-        {
-            foreach (var item in ActiveLanguages)
-            {
-                yield return new MediaTranslation() { LanguageId = item };
             }
         }
     }
