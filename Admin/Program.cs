@@ -3,6 +3,10 @@ using Core.DataAccess;
 using Core.Services;
 using Core.Interfaces;
 using Core.DataAccess.Entities;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
+using Admin.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +20,10 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AuthorizeFolder("/Medias"); 
+    options.Conventions.AuthorizeFolder("/Medias");
 });
+
+builder.Services.RegisterGlobalizationService();
 
 // DI
 builder.Services.AddScoped<IMediaService, MediaService>();
@@ -41,9 +47,25 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseRequestLocalization();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapPost("/language", async context =>
+    {
+        var culture = context.Request.Query["culture"];
+        var returnUrl = context.Request.Query["returnUrl"];
+        context.Response.Cookies.Append(
+            CookieRequestCultureProvider.DefaultCookieName,
+            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+        );
+        context.Response.Redirect(returnUrl);
+    });
+});
 
 app.Run();
