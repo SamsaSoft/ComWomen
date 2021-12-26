@@ -13,7 +13,8 @@
 }
 <ul class="navbar-nav align-items-center">
     <li class="nav-item">
-        <form asp-route="language"
+        @*asp-route="language"*@
+        <form asp-page-handler="language"
               asp-route-returnUrl="@Context.Request.Path"
               method="post" class="form-inline">
             <div class="btn-group" role="group" aria-label="Basic radio toggle button group">

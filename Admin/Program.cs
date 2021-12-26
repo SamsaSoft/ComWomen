@@ -5,8 +5,6 @@ using Core.Interfaces;
 using Core.DataAccess.Entities;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Options;
-using Admin.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,20 +59,20 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(name: "language", pattern: "language");
-    endpoints.MapPost("/language", async context =>
-    {
-        var culture = context.Request.Form["culture"];
-        var returnUrl = context.Request.Query["returnUrl"];
-        context.Response.Cookies.Append(
-            CookieRequestCultureProvider.DefaultCookieName,
-            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-        );
-        context.Response.Redirect(returnUrl);
-    });
-});
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapControllerRoute(name: "language", pattern: "language");
+//    endpoints.MapPost("/language", async context =>
+//    {
+//        var culture = context.Request.Form["culture"];
+//        var returnUrl = context.Request.Query["returnUrl"];
+//        context.Response.Cookies.Append(
+//            CookieRequestCultureProvider.DefaultCookieName,
+//            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+//            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+//        );
+//        context.Response.Redirect(returnUrl);
+//    });
+//});
 
 app.Run();
