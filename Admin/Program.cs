@@ -5,6 +5,7 @@ using Core.Interfaces;
 using Core.DataAccess.Entities;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Admin.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,24 +56,11 @@ app.UseRouting();
 
 app.UseRequestLocalization();
 
+app.UseLanguageMiddleware();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapControllerRoute(name: "language", pattern: "language");
-//    endpoints.MapPost("/language", async context =>
-//    {
-//        var culture = context.Request.Form["culture"];
-//        var returnUrl = context.Request.Query["returnUrl"];
-//        context.Response.Cookies.Append(
-//            CookieRequestCultureProvider.DefaultCookieName,
-//            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-//            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-//        );
-//        context.Response.Redirect(returnUrl);
-//    });
-//});
 
 app.Run();
