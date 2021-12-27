@@ -20,7 +20,7 @@
                         {
                             var strItem = Model.LanguageIdToCode(item);
                             <li class="nav-item">
-                                <a id='@($"lang_nav_{strItem}")' class="nav-link lang_nav" aria-current="true" href="#">@strItem</a>
+                                <a id='@($"lang_nav_{strItem}")' data-lang='@strItem' class="nav-link lang_nav" aria-current="true" href="#">@strItem</a>
                             </li>
                         }
                     </ul>
@@ -29,7 +29,8 @@
                 <input hidden asp-for="@Model.Media.MediaTypeId" />
                 @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
                 {
-                    <div id='@($"lang_body_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="lang_body card-body">
+                    var lang = @Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId);
+                    <div id='@($"lang_body_{lang}")' data-lang='@(lang)' class="lang_body card-body">
                         <input hidden asp-for="@Model.Media.MediaTranslations[i].LanguageId" />
 
                         <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
@@ -60,7 +61,6 @@
     <script src="~/js/media.js"></script>
     <script>
         $.validator.setDefaults({ ignore: '' });
-        let langs = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
 
         function setActiveMediaFilter(filterType)
         {
@@ -108,32 +108,31 @@
             $(`#lang_body_${activeFormLanguage}`).removeAttr("hidden");
             UpdateMediaType();
 
-            _languages.forEach(
-                function(lang, index, array){ 
-                    $(`#lang_nav_${lang}`).on("click", function()
-                        {
-                            clearLangInputs();
-                            $(`#lang_nav_${lang}`).addClass("active");
-                            $(`#lang_body_${lang}`).removeAttr("hidden");
-                            activeFormLanguage = lang;
-                            UpdateMediaType();
-                        });
+            $(`.lang_nav`).on("click", function()
+            {
+                debugger
+                clearLangInputs();
+                $(this).addClass("active");
+                activeFormLanguage = $(this).data("lang");
+                $(`#lang_body_${activeFormLanguage}`).removeAttr("hidden");
+                UpdateMediaType();
+            });
 
-                    $(`#select_file_${lang}`).on("change", function(){ 
-                        var preview = $(`#preview_file_${lang}`);
-                        preview.children().remove();
-                        var mediaType = this.files[0].type;
-                        var mediaClass = mediaType.split('/')[0];
-                        setActiveMediaFilter(mediaClass);
-                        if (!selectedMediaTypes[mediaClass]) {
-                            this.value = this.defaultValue;
-                            preview.prepend("<p>This file type cannot be selected</p>");
-                            return;
-                        }
-                        var htmlTag = createmediafromclass(mediaClass, window.URL.createObjectURL(this.files[0]));
-                        preview.prepend(htmlTag);
-                });
-           });
+            $('.select_file').on("change", function(){ 
+                    var preview = $(`#preview_file_${activeFormLanguage}`);
+                    preview.children().remove();
+                    var mediaType = this.files[0].type;
+                    var mediaClass = mediaType.split('/')[0];
+                    setActiveMediaFilter(mediaClass);
+                    if (!selectedMediaTypes[mediaClass]) {
+                        this.value = this.defaultValue;
+                        preview.prepend("<p>This file type cannot be selected</p>");
+                        return;
+                    }
+                    var htmlTag = createmediafromclass(mediaClass, window.URL.createObjectURL(this.files[0]));
+                    preview.prepend(htmlTag);
+            });
+
 
         });
     </script>
