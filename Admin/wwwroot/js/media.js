@@ -6,12 +6,23 @@ function clearLangInputs() {
     $('.lang_body').attr("hidden", "");
 };
 
-function getactivetab(langs) {
-    for (var item of langs) {
-        if ($(`#lang_nav_${item}`).hasClass("active"))
-            return item;
+function initTabs (initHandler, clickHandler) {
+    clearLangInputs();
+    $(`#lang_nav_${activeFormLanguage}`).addClass("active");
+    $(`#lang_body_${activeFormLanguage}`).removeAttr("hidden");
+    if (initHandler) {
+        initHandler();
     }
-};
+    $(`.lang_nav`).on("click", function () {
+        clearLangInputs();
+        $(this).addClass("active");
+        activeFormLanguage = $(this).data("lang");
+        $(`#lang_body_${activeFormLanguage}`).removeAttr("hidden");
+        if (clickHandler) {
+            clickHandler();
+        }
+    });
+}
 
 function createimagefromurl(url) {
     var htmlTag = $("<img>");

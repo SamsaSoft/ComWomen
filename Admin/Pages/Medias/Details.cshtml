@@ -20,7 +20,7 @@
                     {
                         var strItem = Model.LanguageIdToCode(item);
                         <li class="nav-item">
-                            <a id='@($"lang_nav_{strItem}")' class="nav-link" aria-current="true" href="#">@strItem</a>
+                            <a id='@($"lang_nav_{strItem}")' data-lang='@strItem' class="nav-link lang_nav" aria-current="true" href="#">@strItem</a>
                         </li>
                     }
                 </ul>
@@ -28,7 +28,8 @@
             <input hidden asp-for="@Model.Media.MediaTypeId" />
             @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
             {
-                <div id='@($"lang_body_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
+                var lang = @Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId);
+                <div id='@($"lang_body_{lang}")' data-lang='@(lang)' class="lang_body card-body">
                     <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
                     <span asp-for="@Model.Media.MediaTranslations[i].Title" class="form-control">@Model.Media.MediaTranslations[i].Title</span>
 
@@ -55,38 +56,8 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/media.js" asp-append-version="true"></script>
     <script type="text/javascript">
-        let values = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
-        function clearall()
-        {
-            for(var item of values)
-            {
-                $(`#lang_nav_${item}`).removeClass("active");
-                $(`#lang_body_${item}`).attr("hidden", "");
-            }
-        };
-
-        function getactivetab() {
-            for(var item of values)
-            {
-                if($(`#lang_nav_${item}`).hasClass("active"))
-                    return item;
-            }
-        };
-
-        $(document).ready(function () {
-            clearall();
-            $('@($"#lang_nav_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').addClass("active");
-            $('@($"#lang_body_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').removeAttr("hidden");
-            @foreach (var item in Model.ActiveLanguages.Select(Model.LanguageIdToCode))
-            {
-                @:$('@($"#lang_nav_{item}")').on("click", function()
-                @:{
-                    @:clearall();
-                    @:$('@($"#lang_nav_{item}")').addClass("active");
-                    @:$('@($"#lang_body_{item}")').removeAttr("hidden");
-                @:});
-            }
-        });
+        $(document).ready(initTabs());
     </script>
 }

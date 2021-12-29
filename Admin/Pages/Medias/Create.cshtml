@@ -58,7 +58,7 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script src="~/js/media.js"></script>
+    <script src="~/js/media.js" asp-append-version="true"></script>
     <script>
         $.validator.setDefaults({ ignore: '' });
 
@@ -103,20 +103,7 @@
                 $('#submit_create').attr('disabled', !$('#post_form').valid());
             });
             
-            clearLangInputs();
-            $(`#lang_nav_${activeFormLanguage}`).addClass("active");
-            $(`#lang_body_${activeFormLanguage}`).removeAttr("hidden");
-            UpdateMediaType();
-
-            $(`.lang_nav`).on("click", function()
-            {
-                debugger
-                clearLangInputs();
-                $(this).addClass("active");
-                activeFormLanguage = $(this).data("lang");
-                $(`#lang_body_${activeFormLanguage}`).removeAttr("hidden");
-                UpdateMediaType();
-            });
+            initTabs(UpdateMediaType, UpdateMediaType);
 
             $('.select_file').on("change", function(){ 
                     var preview = $(`#preview_file_${activeFormLanguage}`);
