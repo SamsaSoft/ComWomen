@@ -1,5 +1,6 @@
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Core.Enums;
 
 namespace Admin.Pages.Medias
 {
