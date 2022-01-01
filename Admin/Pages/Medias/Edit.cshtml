@@ -30,9 +30,8 @@
                 <input hidden asp-for="@Model.Media.AuthorId" />
                 <input hidden asp-for="@Model.Media.CreatedAt" />
                 <input hidden asp-for="@Model.Media.Id" />
-                @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
+                @foreach (var lang in Settings.ActiveLanguages)
                 {
-                    var lang = @Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId);
                     <div id='@($"lang_body_{lang}")' data-lang='@(lang)' class="lang_body card-body">
                         <input hidden asp-for="@Model.Media.MediaTranslations[i].Id" />
                         <input hidden asp-for="@Model.Media.MediaTranslations[i].LanguageId" />

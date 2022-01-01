@@ -30,27 +30,25 @@
         <div class="card text-center">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills">
-                    @foreach (var item in Model.ActiveLanguages)
+                    @foreach (var trans in Model.Media.MediaTranslations)
                     {
-                        var strItem = Model.LanguageIdToCode(item);
                         <li class="nav-item">
-                            <a id='@($"lang_nav_{strItem}")' data-lang='@strItem' class="nav-link lang_nav" aria-current="true" href="#">@strItem</a>
+                            <a id='@($"lang_nav_{trans.LanguageId}")' data-lang='@trans.LanguageId' class="nav-link lang_nav" aria-current="true" href="#">@trans.LanguageId</a>
                         </li>
                     }
                 </ul>
             </div>
             <input hidden asp-for="@Model.Media.MediaTypeId" />
-            @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
+            @foreach (var trans in Model.Media.MediaTranslations)
             {
-                var lang = @Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId);
-                <div id='@($"lang_body_{lang}")' data-lang='@(lang)' class="lang_body card-body">
-                    <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
-                    <span asp-for="@Model.Media.MediaTranslations[i].Title" class="form-control">@Model.Media.MediaTranslations[i].Title</span>
+                <div id='@($"lang_body_{trans.LanguageId}")' data-lang='@(trans.LanguageId)' class="lang_body card-body">
+                    <label asp-for="@trans.Title" class="control-label"></label>
+                    <span asp-for="@trans.Title" class="form-control">@trans.Title</span>
 
-                    <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
-                    <span class="form-control">@Model.Media.MediaTranslations[i].Description</span>
+                    <label asp-for="@trans.Description" class="control-label"></label>
+                    <span class="form-control">@trans.Description</span>
 
-                    <label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label d-block"></label>
+                    <label asp-for="@trans.Url" class="control-label d-block"></label>
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Photo)
                     {
                         <img class="img-fluid" src="~/@GetMediaPath(i)" />
