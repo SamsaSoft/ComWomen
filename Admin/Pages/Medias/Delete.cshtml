@@ -4,12 +4,6 @@
 @{
     ViewData["Title"] = "Delete";
 }
-@{
-    string GetMediaPath(int index)
-    {
-        return Model.ClassNameToDirectory(Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)) + '/' + Model.Media.MediaTranslations[index].Url;
-    }
-}
 <h1>Delete</h1>
 
 <form method="post" class="mb-3 bg-danger bg-opacity-50">
@@ -39,7 +33,7 @@
                 </ul>
             </div>
             <input hidden asp-for="@Model.Media.MediaTypeId" />
-            @{int i = 0;}
+
             @foreach (var trans in Model.Media.MediaTranslations)
             {
                 <div id='@($"lang_body_{trans.LanguageId}")' data-lang='@(trans.LanguageId)' class="lang_body card-body">
@@ -50,9 +44,10 @@
                     <span class="form-control">@trans.Description</span>
 
                     <label asp-for="@trans.Url" class="control-label d-block"></label>
+                    @{string src = $"{Model.Media.MediaTypeId}/";
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Photo)
                     {
-                        <img class="img-fluid" src="~/@GetMediaPath(i)" />
+                        <img class="img-fluid" src="~/@trans.Url" />
                     }
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Audio)
                     {
@@ -63,7 +58,6 @@
                         <video class="form-control img-fluid" src="~/@GetMediaPath(i)" controls></video>
                     }
                 </div>
-                i++;
             }
         </div>
     </div>

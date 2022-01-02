@@ -10,12 +10,7 @@ namespace Admin.Pages.Medias
         public BaseMediaPageModel(IMediaService mediaService)
         {
             _mediaService = mediaService;
-        }
-
-        public string LanguageIdToCode(LanguageEnum language)
-        {
-            return _mediaService.LanguageIdToCode(language);
-        }
+        }     
 
         public string MediaTypeIdToClassName(MediaTypeEnum mediaType) 
         {

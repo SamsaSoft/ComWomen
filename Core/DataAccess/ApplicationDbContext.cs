@@ -9,7 +9,6 @@ namespace Core.DataAccess
     {
         internal DbSet<MediaType> MediaTypes { get; set; }
         internal DbSet<Media> Medias { get; set; }
-        internal DbSet<Language> Languages { get; set; }
         internal DbSet<MediaTranslation> MediaTranslations { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -46,24 +45,6 @@ namespace Core.DataAccess
                         {
                             Id = e,
                             Name = e.ToString(),
-                            IsEnabled = true
-                        })
-                );
-
-            modelBuilder
-                .Entity<Language>()
-                .Property(e => e.Id)
-                .HasConversion<int>();
-
-            modelBuilder
-                .Entity<Language>().HasData(
-                    Enum.GetValues(typeof(LanguageEnum))
-                        .Cast<LanguageEnum>()
-                        .Select(e => new Language()
-                        {
-                            Id = e,
-                            Name = char.ToUpper(new CultureInfo(e.ToString()).NativeName[0]) + new CultureInfo(e.ToString()).NativeName[1..],
-                            LanguageCode = new CultureInfo(e.ToString()).Name,
                             IsEnabled = true
                         })
                 );

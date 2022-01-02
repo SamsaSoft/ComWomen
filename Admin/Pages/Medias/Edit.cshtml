@@ -31,26 +31,26 @@
                 <input hidden asp-for="@Model.Media.CreatedAt" />
                 <input hidden asp-for="@Model.Media.Id" />
                 @{int i = 0;}
-                @foreach (var lang in Settings.ActiveLanguages)
+                @foreach (var trans in Model.Media.MediaTranslations)
                 {
-                    <div id='@($"lang_body_{lang}")' data-lang='@(lang)' class="lang_body card-body">
-                        <input hidden asp-for="@Model.Media.MediaTranslations[i].Id" />
-                        <input hidden asp-for="@Model.Media.MediaTranslations[i].LanguageId" />
-                        <input hidden asp-for="@Model.Media.MediaTranslations[i].MediaId" />
-                        <input hidden asp-for="@Model.Media.MediaTranslations[i].Url" />
+                    <div id='@($"lang_body_{trans.LanguageId}")' data-lang='@(trans.LanguageId)' class="lang_body card-body">
+                        <input hidden asp-for="@trans.Id" />
+                        <input hidden asp-for="@trans.LanguageId" />
+                        <input hidden asp-for="@trans.MediaId" />
+                        <input hidden asp-for="@trans.Url" />
 
-                        <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
-                        <input asp-for="@Model.Media.MediaTranslations[i].Title" class="form-control" />
-                        <span asp-validation-for="@Model.Media.MediaTranslations[i].Title" class="text-danger"></span>
+                        <label asp-for="@trans.Title" class="control-label"></label>
+                        <input asp-for="@trans.Title" class="form-control" />
+                        <span asp-validation-for="@trans.Title" class="text-danger"></span>
 
-                        <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
-                        <textarea rows="3" asp-for="@Model.Media.MediaTranslations[i].Description" class="form-control"></textarea>
-                        <span asp-validation-for="@Model.Media.MediaTranslations[i].Description" class="text-danger"></span>
+                        <label asp-for="@trans.Description" class="control-label"></label>
+                        <textarea rows="3" asp-for="@trans.Description" class="form-control"></textarea>
+                        <span asp-validation-for="@trans.Description" class="text-danger"></span>
 
-                        <input asp-for="@Model.Files[Model.Media.MediaTranslations[i].LanguageId]" data-url="@Model.Media.MediaTranslations[i].Url" type="file" class="form-control select_file" accept="@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)/*" id='@($"select_file_{lang}")' />
-                        <input hidden name="Files[@Model.Media.MediaTranslations[i].LanguageId].Key" value="@Model.Media.MediaTranslations[i].LanguageId" />
-                        <span asp-validation-for="@Model.Media.MediaTranslations[i].Url" class="text-danger"></span>
-                        <div id='@($"preview_file_{lang}")' class="preview">
+                        <input asp-for="@Model.Files[trans.LanguageId]" data-url="@trans.Url" type="file" class="form-control select_file" accept="@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)/*" id='@($"select_file_{trans.LanguageId}")' />
+                        <input hidden name="Files[@trans.LanguageId].Key" value="@trans.LanguageId" />
+                        <span asp-validation-for="@trans.Url" class="text-danger"></span>
+                        <div id='@($"preview_file_{trans.LanguageId}")' class="preview">
                             <p>No files currently selected for upload</p>
                         </div>
                     </div>

@@ -3,12 +3,7 @@
 @{
     ViewData["Title"] = "Details";
 }
-@{
-    string GetMediaPath(int index)
-    {
-        return Model.ClassNameToDirectory(Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)) + '/' + Model.Media.MediaTranslations[index].Url;
-    }
-}
+
 <h1>Details</h1>
 
 <div class="row">
