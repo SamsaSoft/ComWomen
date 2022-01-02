@@ -11,18 +11,20 @@
         <div class="card text-center">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills">
-                    @foreach (var lang in Enum.GetNames(typeof(LanguageEnum)))
+                    @foreach (var trans in Model.Media.MediaTranslations)
                     {
                         <li class="nav-item">
-                            <a id='@($"lang_nav_{lang}")' data-lang='@lang' class="nav-link lang_nav" aria-current="true" href="#">@lang</a>
+                            <a id='@($"lang_nav_{trans.LanguageId}")' data-lang='@trans.LanguageId' class="nav-link lang_nav" aria-current="true" href="#">@trans.LanguageId</a>
                         </li>
                     }
                 </ul>
             </div>
             <input hidden asp-for="@Model.Media.MediaTypeId" />
-            @{int i = 0;}
+          
             @foreach (var trans in Model.Media.MediaTranslations)
             {
+                string src = $"~/{Model.Media.MediaTypeId}/{trans.Url}";
+
                 <div class="lang_body card-body">
                     <label asp-for="@trans.Title" class="control-label"></label>
                     <span asp-for="@trans.Title" class="form-control">@trans.Title</span>
@@ -31,20 +33,20 @@
                     <textarea rows="3" class="form-control">@trans.Description</textarea>
 
                     <label asp-for="@trans.Url" class="control-label d-block"></label>
+                    
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Photo)
                     {
-                        <img class="img-fluid" src="~/@GetMediaPath(i)" />
+                        <img class="img-fluid" src="@src" />
                     }
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Audio)
                     {
-                        <audio src="~/@GetMediaPath(i)" controls></audio>
+                        <audio src="@src" controls></audio>
                     }
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Video)
                     {
-                        <video class="form-control" src="~/@GetMediaPath(i)" controls></video>
+                        <video class="form-control img-fluid" src="@src" controls></video>
                     }
                 </div>
-                i++;
             }
         </div>
     </div>

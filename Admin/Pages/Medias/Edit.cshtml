@@ -16,11 +16,10 @@
         <div class="card">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills">
-                    @foreach (var item in Model.ActiveLanguages)
+                    @foreach (var lang in Settings.ActiveLanguages)
                     {
-                        var strItem = Model.LanguageIdToCode(item);
                         <li class="nav-item">
-                            <a id='@($"lang_nav_{strItem}")' data-lang='@strItem' class="nav-link lang_nav" aria-current="true" href="#">@strItem</a>
+                            <a id='@($"lang_nav_{lang}")' data-lang='@lang' class="nav-link lang_nav" aria-current="true" href="#">@lang</a>
                         </li>
                     }
                 </ul>
@@ -30,7 +29,7 @@
                 <input hidden asp-for="@Model.Media.AuthorId" />
                 <input hidden asp-for="@Model.Media.CreatedAt" />
                 <input hidden asp-for="@Model.Media.Id" />
-                @{int i = 0;}
+          
                 @foreach (var trans in Model.Media.MediaTranslations)
                 {
                     <div id='@($"lang_body_{trans.LanguageId}")' data-lang='@(trans.LanguageId)' class="lang_body card-body">
@@ -56,7 +55,6 @@
                     </div>
                 }
                 <input type="submit" class="btn btn-primary m-3" value="Update" />
-                i++;
             </form>
         </div>
     </div>

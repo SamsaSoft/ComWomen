@@ -5,17 +5,16 @@ namespace Admin.Pages.Medias
 {
     public class DeleteModel : BaseMediaPageModel
     {
-        private readonly IWebHostEnvironment _webHost;
         public LanguageEnum ActiveLanguage { get; set; }
-        public DeleteModel(IMediaService mediaService, IWebHostEnvironment webHost):base(mediaService)
+        public DeleteModel(IMediaService mediaService):base(mediaService)
         {
-            _webHost = webHost;
         }
         [BindProperty]
         public Media Media { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public int MediaId { get; set; }
+
         public async Task<IActionResult> OnGetAsync()
         {
             try
