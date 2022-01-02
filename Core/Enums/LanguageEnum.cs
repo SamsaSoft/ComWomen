@@ -1,6 +1,6 @@
 ﻿namespace Core.Enums
 {
-    public enum LanguageEnum : int
+    public enum LanguageEnum : short
     {
         //en = 1,
         ru = 2,

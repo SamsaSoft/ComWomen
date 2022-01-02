@@ -52,14 +52,6 @@ namespace Core.Services
             await _context.SaveChangesAsync();
         }
 
-        public string LanguageIdToCode(LanguageEnum language)
-        {
-            var lang = _context.Languages.Find(language);
-            if (lang == null)
-                throw new KeyNotFoundException("This language is not in the database");
-            return lang.LanguageCode;
-        }
-
         public async Task<IEnumerable<Media>> GetAll() =>
             await _context.Medias
                     .Include(x => x.Author)
