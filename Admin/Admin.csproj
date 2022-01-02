@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Model\" />
     <Folder Include="wwwroot\audio\" />
     <Folder Include="wwwroot\controls\" />
     <Folder Include="wwwroot\images\" />

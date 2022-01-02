@@ -1,5 +1,6 @@
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace Admin.Pages.Medias
 {
@@ -16,8 +17,6 @@ namespace Admin.Pages.Medias
         [BindProperty]
         public Dictionary<LanguageEnum, IFormFile> Files { get; set; }
 
-        public IEnumerable<LanguageEnum> ActiveLanguages => Media.MediaTranslations.Select(x => x.LanguageId);
-
         public IDictionary<string, string> MediaDirectoryDictionary => Enum
             .GetValues<MediaTypeEnum>()
             .Select(x => MediaTypeIdToClassName(x))
@@ -31,7 +30,7 @@ namespace Admin.Pages.Medias
             try
             {
                 Media = await _mediaService.GetById(MediaId);
-                Files = CreateFileDictionaryAllLanguages();
+                Files = Settings.ActiveLanguages.ToDictionary(x => x, _ => (IFormFile)null);
                 return Page();
             }
             catch (KeyNotFoundException)
@@ -53,22 +52,13 @@ namespace Admin.Pages.Medias
             await _mediaService.Update(Media);
             return RedirectToPage("index");
         }
-        private Dictionary<LanguageEnum, IFormFile> CreateFileDictionaryAllLanguages()
-        {
-            var files = new Dictionary<LanguageEnum, IFormFile>();
-            foreach (var item in ActiveLanguages)
-            {
-                files.Add(item, null);
-            }
-            return files;
-        }
-
+       
         private async Task ProcessingAttachFiles()
         {
             var wwwPath = _webHost.WebRootPath;
             var classMedia = MediaTypeIdToClassName(Media.MediaTypeId);
             var mediaPath = Path.Combine(wwwPath, ClassNameToDirectory(classMedia));
-            foreach (var item in ActiveLanguages)
+            foreach (var item in Settings.ActiveLanguages)
             {
                 if (Files[item] != null)
                 {

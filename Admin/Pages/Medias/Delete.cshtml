@@ -36,6 +36,8 @@
 
             @foreach (var trans in Model.Media.MediaTranslations)
             {
+                string src = $"~/{Model.Media.MediaTypeId}/{trans.Url}";
+
                 <div id='@($"lang_body_{trans.LanguageId}")' data-lang='@(trans.LanguageId)' class="lang_body card-body">
                     <label asp-for="@trans.Title" class="control-label"></label>
                     <span asp-for="@trans.Title" class="form-control">@trans.Title</span>
@@ -44,19 +46,18 @@
                     <span class="form-control">@trans.Description</span>
 
                     <label asp-for="@trans.Url" class="control-label d-block"></label>
-                    @{string src = $"{Model.Media.MediaTypeId}/";
-                    }
+                    
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Photo)
                     {
-                        <img class="img-fluid" src="~/@trans.Url" />
+                        <img class="img-fluid" src="@src" />
                     }
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Audio)
                     {
-                        <audio src="~/@trans.Url" controls></audio>
+                        <audio src="@src" controls></audio>
                     }
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Video)
                     {
-                        <video class="form-control img-fluid" src="~/@trans.Url" controls></video>
+                        <video class="form-control img-fluid" src="@src" controls></video>
                     }
                 </div>
             }
