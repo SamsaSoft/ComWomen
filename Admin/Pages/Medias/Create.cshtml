@@ -104,6 +104,7 @@
             initTabs(UpdateMediaType, UpdateMediaType);
 
             $('.select_file').on("change", function(){ 
+                    var data = JSON.stringify( $('#post_form').serializeArray() );
                     var preview = $(`#preview_file_${activeFormLanguage}`);
                     preview.children().remove();
                     var mediaType = this.files[0].type;

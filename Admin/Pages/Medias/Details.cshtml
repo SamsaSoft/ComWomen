@@ -33,15 +33,15 @@
                     <label asp-for="@trans.Url" class="control-label d-block"></label>
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Photo)
                     {
-                        <img class="img-fluid" src="~/@GetMediaPath(i)" />
+                        <img class="img-fluid" src="~/@trans.Url" />
                     }
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Audio)
                     {
-                        <audio src="~/@GetMediaPath(i)" controls></audio>
+                        <audio src="~/@trans.Url" controls></audio>
                     }
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Video)
                     {
-                        <video class="form-control" src="~/@GetMediaPath(i)" controls></video>
+                        <video class="form-control" src="~/@trans.Url" controls></video>
                     }
                 </div>
                 i++;

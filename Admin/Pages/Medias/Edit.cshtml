@@ -18,7 +18,7 @@
                 <ul class="nav nav-pills card-header-pills">
                     @foreach (var item in Model.ActiveLanguages)
                     {
-                        var strItem = Model.LanguageIdToCode(item);
+                        var strItem = item;
                         <li class="nav-item">
                             <a id='@($"lang_nav_{strItem}")' data-lang='@strItem' class="nav-link lang_nav" aria-current="true" href="#">@strItem</a>
                         </li>
