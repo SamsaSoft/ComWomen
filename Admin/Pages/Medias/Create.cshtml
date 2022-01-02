@@ -16,34 +16,32 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <ul class="nav nav-pills card-header-pills">
-                        @foreach (var lang in Model.ActiveLanguages)
+                        @foreach (var lang in Settings.ActiveLanguages)
                         {
                             <li class="nav-item">
                                 <a id='@($"lang_nav_{lang}")' data-lang='@lang' class="nav-link lang_nav" aria-current="true" href="#">@lang</a>
                             </li>
                         }
                     </ul>
-               
                 </div>
-                <input hidden asp-for="@Model.Media.MediaTypeId" />
-                @foreach (var trans in Model.Media.MediaTranslations)
+                @foreach (var lang in Settings.ActiveLanguages)
                 {
-                    <div id='@($"lang_body_{trans.LanguageId}")' data-lang='@(trans.LanguageId)' class="lang_body card-body">
-                        <input hidden asp-for="@trans.LanguageId" />
+                    <div id='@($"lang_body_{lang}")' data-lang='@(lang)' class="lang_body card-body">
+                        <input hidden asp-for="@Model.MediaData[lang].LanguageId" />
 
-                        <label asp-for="@trans.Title" class="control-label"></label>
-                        <input asp-for="@trans.Title" class="form-control" />
-                        <span asp-validation-for="@trans.Title" class="text-danger"></span>
+                        <label asp-for="@Model.MediaData[lang].Title" class="control-label"></label>
+                        <input asp-for="@Model.MediaData[lang].Title" class="form-control" />
+                        <span asp-validation-for="@Model.MediaData[lang].Title" class="text-danger"></span>
 
-                        <label asp-for="@trans.Description" class="control-label"></label>
-                        <textarea type="text" rows="3" asp-for="@trans.Description" class="form-control"></textarea>
-                        <span asp-validation-for="@trans.Description" class="text-danger"></span>
+                        <label asp-for="@Model.MediaData[lang].Description" class="control-label"></label>
+                        <textarea type="text" rows="3" asp-for="@Model.MediaData[lang].Description" class="form-control"></textarea>
+                        <span asp-validation-for="@Model.MediaData[lang].Description" class="text-danger"></span>
                         <br />
                             
-                        <input asp-for="@Model.Files[trans.LanguageId]" type="file" class="form-control select_file" id='@($"select_file_{trans.LanguageId}")' />
-                        <input hidden name="Files[@trans.LanguageId].Key" value="@trans.LanguageId" />
-                        <span asp-validation-for="@trans.Url" class="text-danger"></span>
-                        <div id='@($"preview_file_{trans.LanguageId}")' class="preview">
+                        <input asp-for="@Model.MediaData[lang].FormFile" type="file" class="form-control select_file" id='@($"select_file_{lang}")' />
+                        <input hidden name="MediaData[@lang].Key" value="@lang" />
+                        <span asp-validation-for="@Model.MediaData[lang].Url" class="text-danger"></span>
+                        <div id='@($"preview_file_{lang}")' class="preview">
                             <p>No files currently selected for upload</p>
                         </div>
                     </div>
@@ -104,7 +102,6 @@
             initTabs(UpdateMediaType, UpdateMediaType);
 
             $('.select_file').on("change", function(){ 
-                    var data = JSON.stringify( $('#post_form').serializeArray() );
                     var preview = $(`#preview_file_${activeFormLanguage}`);
                     preview.children().remove();
                     var mediaType = this.files[0].type;
@@ -118,8 +115,6 @@
                     var htmlTag = createmediafromclass(mediaClass, window.URL.createObjectURL(this.files[0]));
                     preview.prepend(htmlTag);
             });
-
-
         });
     </script>
 }

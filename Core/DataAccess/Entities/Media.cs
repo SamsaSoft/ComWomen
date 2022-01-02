@@ -17,7 +17,10 @@ namespace Core.DataAccess.Entities
         public MediaTranslation this[LanguageEnum language] 
         {
             get { 
-                return this.MediaTranslations.FirstOrDefault(x => x.LanguageId == language);
+                var translation = this.MediaTranslations.FirstOrDefault(x => x.LanguageId == language);
+                if (translation == null)
+                    return new MediaTranslation();
+                return translation;
             }
         }
     }
