@@ -103,8 +103,8 @@ namespace Admin.Pages.Medias
         private async Task ProcessingAttachFiles()
         {
             var wwwPath = _webHost.WebRootPath;
-            var classMedia = GetClass();
-            var mediaPath = Path.Combine(wwwPath, ClassNameToDirectory(classMedia));
+            var classMedia = ClassNameToMediaTypeId(GetClass()).ToString();
+            var mediaPath = Path.Combine(wwwPath, classMedia);
             CreateDirectoryIfNotExists(mediaPath);
             foreach (var item in Settings.ActiveLanguages)
             {

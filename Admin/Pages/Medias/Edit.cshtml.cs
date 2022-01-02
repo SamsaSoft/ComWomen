@@ -19,8 +19,7 @@ namespace Admin.Pages.Medias
 
         public IDictionary<string, string> MediaDirectoryDictionary => Enum
             .GetValues<MediaTypeEnum>()
-            .Select(x => MediaTypeIdToClassName(x))
-            .ToDictionary(x => x, x => ClassNameToDirectory(x));
+            .ToDictionary(x => MediaTypeIdToClassName(x), x => x.ToString());
 
         [BindProperty(SupportsGet = true)]
         public int MediaId { get; set; }
