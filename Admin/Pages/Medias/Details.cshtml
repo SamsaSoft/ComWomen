@@ -25,6 +25,7 @@
                 </ul>
             </div>
             <input hidden asp-for="@Model.Media.MediaTypeId" />
+            @{int i = 0;}
             @foreach (var trans in Model.Media.MediaTranslations)
             {
                 <div class="lang_body card-body">
@@ -41,13 +42,14 @@
                     }
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Audio)
                     {
-                        <audio src="~/@GetMediaPath(Model.Media.MediaTypeId)" controls></audio>
+                        <audio src="~/@GetMediaPath(i)" controls></audio>
                     }
                     @if (Model.Media.MediaTypeId == MediaTypeEnum.Video)
                     {
                         <video class="form-control" src="~/@GetMediaPath(i)" controls></video>
                     }
                 </div>
+                i++;
             }
         </div>
     </div>

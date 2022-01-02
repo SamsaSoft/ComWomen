@@ -39,6 +39,7 @@
                 </ul>
             </div>
             <input hidden asp-for="@Model.Media.MediaTypeId" />
+            @{int i = 0;}
             @foreach (var trans in Model.Media.MediaTranslations)
             {
                 <div id='@($"lang_body_{trans.LanguageId}")' data-lang='@(trans.LanguageId)' class="lang_body card-body">
@@ -62,6 +63,7 @@
                         <video class="form-control img-fluid" src="~/@GetMediaPath(i)" controls></video>
                     }
                 </div>
+                i++;
             }
         </div>
     </div>

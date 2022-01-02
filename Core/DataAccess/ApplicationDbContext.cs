@@ -30,6 +30,10 @@ namespace Core.DataAccess
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder
+                .Entity<MediaTranslation>()
+                .HasQueryFilter(x => Settings.ActiveLanguages.Contains(x.LanguageId));
+
+            modelBuilder
                 .Entity<MediaType>()
                 .Property(e => e.Id)
                 .HasConversion<int>();
