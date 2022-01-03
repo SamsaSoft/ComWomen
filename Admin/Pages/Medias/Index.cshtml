@@ -3,12 +3,7 @@
 @{
     ViewData["Title"] = "Index";
 }
-@{
-    string GetMediaPath(Media media)
-    {
-        return Model.ClassNameToDirectory(Model.MediaTypeIdToClassName(media.MediaTypeId)) + '/' + media[Model.ActiveLanguage].Url;
-    }
-}
+
 <div class="card">
     <div class="card-header">
         <div class="row">
@@ -22,35 +17,38 @@
     </div>
     @foreach (var item in Model.Medias)
     {
+        var trans = item[Model.ActiveLanguage]; 
+
         <div class="row text-center mt-1 mb-1">
             <div class="col">
                 <div class="card">
                     <div class="card-header text-center text-primary p-0 text-uppercase">
-                        <h5>@item[Model.ActiveLanguage].Title</h5>
+                        <h5>@trans.Title</h5>
                     </div>
                     <div class="card-body p-0 justify-content-center">
                         <div class="row row-cols-3 align-items-center">
                             <div class="col-2 ">
-                                @if (item.MediaTypeId == MediaTypeEnum.Photo)
+                                @{string src = $"{item.MediaType}/{trans.Url}";}
+                                @if (item.MediaType == MediaType.Photo)
                                 {
-                                    <img class="img-fluid" src="~/@GetMediaPath(item)" />
+                                    <img class="img-fluid" src="@src" />
                                 }
-                                @if (item.MediaTypeId == MediaTypeEnum.Audio)
+                                @if (item.MediaType == MediaType.Audio)
                                 {
                                     <div>
-                                        <audio src="~/@GetMediaPath(item)"></audio>
+                                        <audio src="@src"></audio>
                                         <button class="form-control" onclick="audioClick(this)">
                                             <img style="max-width:64px" class="img-fluid" src="~/controls/Play_-_The_Noun_Project.svg" />
                                         </button>
                                     </div>
                                 }
-                                @if (item.MediaTypeId == MediaTypeEnum.Video)
+                                @if (item.MediaType == MediaType.Video)
                                 {
-                                    <video class="img-fluid" src="~/@GetMediaPath(item)" controls></video>
+                                    <video class="img-fluid" src="@src" controls></video>
                                 }
                             </div>
                             <div class="col-8 bg-light top-0 text-start">
-                                <textarea rows="3" class="form-control" readonly>@item[Model.ActiveLanguage].Description</textarea>
+                                <textarea rows="3" class="form-control" readonly>@trans.Description</textarea>
                             </div>
                             <div class="col-2">
                                 <a asp-page="Details" asp-route-mediaid="@item.Id" class="btn btn-primary p-0 m-1 d-block" style="font-size:small;">Details</a>

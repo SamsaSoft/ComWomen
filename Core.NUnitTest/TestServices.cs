@@ -51,21 +51,21 @@ namespace Core.NUnitTest
             //act
             var media = new Media
             {
-                MediaTypeId = Enums.MediaTypeEnum.Photo,
+                MediaType = Enums.MediaType.Photo,
             };
             await service.Upload(media);
             media = new Media
             {
-                MediaTypeId = Enums.MediaTypeEnum.Photo,
+                MediaType = Enums.MediaType.Photo,
             };
             await service.Upload(media);
             media = new Media
             {
-                MediaTypeId = Enums.MediaTypeEnum.Video,
+                MediaType = Enums.MediaType.Video,
             };
             await service.Upload(media);
             //assert
-            var medias = await service.GetAllWithType(Enums.MediaTypeEnum.Photo);
+            var medias = await service.GetAllWithType(Enums.MediaType.Photo);
             Assert.IsNotNull(medias);
             Assert.AreEqual(2, medias.Count);
         }

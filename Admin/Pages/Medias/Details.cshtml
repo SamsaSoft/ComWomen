@@ -3,12 +3,7 @@
 @{
     ViewData["Title"] = "Details";
 }
-@{
-    string GetMediaPath(int index)
-    {
-        return Model.ClassNameToDirectory(Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)) + '/' + Model.Media.MediaTranslations[index].Url;
-    }
-}
+
 <h1>Details</h1>
 
 <div class="row">
@@ -16,37 +11,40 @@
         <div class="card text-center">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills">
-                    @foreach (var item in Model.ActiveLanguages)
+                    @foreach (var trans in Model.Media.Translations)
                     {
-                        var strItem = Model.LanguageIdToCode(item);
                         <li class="nav-item">
-                            <a id='@($"lang_nav_{strItem}")' class="nav-link" aria-current="true" href="#">@strItem</a>
+                            <a id='@($"lang_nav_{trans.LanguageId}")' data-lang='@trans.LanguageId' class="nav-link lang_nav" aria-current="true" href="#">@trans.LanguageId</a>
                         </li>
                     }
                 </ul>
             </div>
-            <input hidden asp-for="@Model.Media.MediaTypeId" />
-            @for (var i = 0; i < Model.Media.MediaTranslations.Count; i++)
+            <input hidden asp-for="@Model.Media.MediaType" />
+          
+            @foreach (var trans in Model.Media.Translations)
             {
-                <div id='@($"lang_body_{ Model.LanguageIdToCode(Model.Media.MediaTranslations[i].LanguageId)}")' class="card-body">
-                    <label asp-for="@Model.Media.MediaTranslations[i].Title" class="control-label"></label>
-                    <span asp-for="@Model.Media.MediaTranslations[i].Title" class="form-control">@Model.Media.MediaTranslations[i].Title</span>
+                string src = $"{Model.Media.MediaType}/{trans.Url}";
 
-                    <label asp-for="@Model.Media.MediaTranslations[i].Description" class="control-label"></label>
-                    <textarea rows="3" class="form-control">@Model.Media.MediaTranslations[i].Description</textarea>
+                <div class="lang_body card-body">
+                    <label asp-for="@trans.Title" class="control-label"></label>
+                    <span asp-for="@trans.Title" class="form-control">@trans.Title</span>
 
-                    <label asp-for="@Model.Media.MediaTranslations[i].Url" class="control-label d-block"></label>
-                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Photo)
+                    <label asp-for="@trans.Description" class="control-label"></label>
+                    <textarea rows="3" class="form-control">@trans.Description</textarea>
+
+                    <label asp-for="@trans.Url" class="control-label d-block"></label>
+                    
+                    @if (Model.Media.MediaType == MediaType.Photo)
                     {
-                        <img class="img-fluid" src="~/@GetMediaPath(i)" />
+                        <img class="img-fluid" src="@src" />
                     }
-                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Audio)
+                    @if (Model.Media.MediaType == MediaType.Audio)
                     {
-                        <audio src="~/@GetMediaPath(i)" controls></audio>
+                        <audio src="@src" controls></audio>
                     }
-                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Video)
+                    @if (Model.Media.MediaType == MediaType.Video)
                     {
-                        <video class="form-control" src="~/@GetMediaPath(i)" controls></video>
+                        <video class="form-control img-fluid" src="@src" controls></video>
                     }
                 </div>
             }
@@ -55,38 +53,8 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/media.js" asp-append-version="true"></script>
     <script type="text/javascript">
-        let values = @(Json.Serialize(Model.ActiveLanguages.Select(Model.LanguageIdToCode)));
-        function clearall()
-        {
-            for(var item of values)
-            {
-                $(`#lang_nav_${item}`).removeClass("active");
-                $(`#lang_body_${item}`).attr("hidden", "");
-            }
-        };
-
-        function getactivetab() {
-            for(var item of values)
-            {
-                if($(`#lang_nav_${item}`).hasClass("active"))
-                    return item;
-            }
-        };
-
-        $(document).ready(function () {
-            clearall();
-            $('@($"#lang_nav_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').addClass("active");
-            $('@($"#lang_body_{Model.LanguageIdToCode(Model.ActiveLanguages.First())}")').removeAttr("hidden");
-            @foreach (var item in Model.ActiveLanguages.Select(Model.LanguageIdToCode))
-            {
-                @:$('@($"#lang_nav_{item}")').on("click", function()
-                @:{
-                    @:clearall();
-                    @:$('@($"#lang_nav_{item}")').addClass("active");
-                    @:$('@($"#lang_body_{item}")').removeAttr("hidden");
-                @:});
-            }
-        });
+        $(document).ready(initTabs());
     </script>
 }

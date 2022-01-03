@@ -1,6 +1,6 @@
 ﻿namespace Core.Enums
 {
-    public enum MediaTypeEnum : int
+    public enum MediaType : int
     {
         Photo = 1,
         Video = 2,
