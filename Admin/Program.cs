@@ -26,8 +26,8 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Language");
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var supportedCultures = Enum.GetNames<Language>().Select(x => new CultureInfo(x)).ToList();
-    options.DefaultRequestCulture = new RequestCulture(Language.ru.ToString());
+    var supportedCultures = Settings.ActiveLanguages.Select(x => new CultureInfo(x.ToString())).ToList();
+    options.DefaultRequestCulture = new RequestCulture(Settings.DefaultLanguage.ToString());
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
 });

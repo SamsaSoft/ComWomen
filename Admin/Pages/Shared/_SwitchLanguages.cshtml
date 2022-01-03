@@ -1,29 +1,25 @@
 ﻿@using Microsoft.AspNetCore.Localization
 @using Microsoft.Extensions.Options
 
-@inject IOptions<RequestLocalizationOptions> LocOptions
 
-
-@{
-    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
-    // получаем список поддерживаемых культур
-    var cultureItems = LocOptions.Value.SupportedUICultures
-        .Select(c => c.Name)
-        .ToList();
-}
 <ul class="navbar-nav align-items-center">
     <li class="nav-item">
         @*asp-route="language"*@
         <form asp-page-handler="language"
               asp-route-returnUrl="@Context.Request.Path"
               method="post" class="form-inline">
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                @foreach (var item in cultureItems)
-                {
-                    <input onchange="this.form.submit();" type="radio" class="btn-check" name="culture" id="@item" autocomplete="off" value="@item" checked="@(requestCulture.RequestCulture.UICulture.Name == item)">
-                    <label class="btn btn-outline-primary" for="@item">@item</label>
-                }
-            </div>
+            @{
+                var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+                var cultureItems = Settings.ActiveLanguages
+                    .Select(c => c.ToString())
+                    .ToList();
+                var itemIndex = cultureItems.IndexOf(requestCulture.RequestCulture.Culture.Name);
+                if (++itemIndex > cultureItems.Count - 1)
+                    itemIndex = 0;
+                var item = cultureItems[itemIndex];
+            }
+            <input onclick="this.form.submit();" type="button" class="btn btn-outline-primary" value="@item">
+            <input type="hidden" value="@item" name="culture" />
         </form>
     </li>
 </ul>
