@@ -4,7 +4,7 @@ namespace Core
 {
     public static class Settings
     {
-        public static LanguageEnum DefaultLanguage => LanguageEnum.ru;
-        public static IEnumerable<LanguageEnum> ActiveLanguages => Enum.GetValues<LanguageEnum>();
+        public static Language DefaultLanguage => Language.ru;
+        public static IEnumerable<Language> ActiveLanguages => Enum.GetValues<Language>();
     }
 }

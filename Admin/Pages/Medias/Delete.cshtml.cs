@@ -5,7 +5,7 @@ namespace Admin.Pages.Medias
 {
     public class DeleteModel : BaseMediaPageModel
     {
-        public LanguageEnum ActiveLanguage { get; set; }
+        public Language ActiveLanguage { get; set; }
         public DeleteModel(IMediaService mediaService):base(mediaService)
         {
         }

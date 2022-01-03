@@ -28,12 +28,12 @@
                     <div class="card-body p-0 justify-content-center">
                         <div class="row row-cols-3 align-items-center">
                             <div class="col-2 ">
-                                @{string src = $"{item.MediaTypeId}/{trans.Url}";}
-                                @if (item.MediaTypeId == MediaTypeEnum.Photo)
+                                @{string src = $"{item.MediaType}/{trans.Url}";}
+                                @if (item.MediaType == MediaType.Photo)
                                 {
                                     <img class="img-fluid" src="@src" />
                                 }
-                                @if (item.MediaTypeId == MediaTypeEnum.Audio)
+                                @if (item.MediaType == MediaType.Audio)
                                 {
                                     <div>
                                         <audio src="@src"></audio>
@@ -42,7 +42,7 @@
                                         </button>
                                     </div>
                                 }
-                                @if (item.MediaTypeId == MediaTypeEnum.Video)
+                                @if (item.MediaType == MediaType.Video)
                                 {
                                     <video class="img-fluid" src="@src" controls></video>
                                 }

@@ -24,24 +24,24 @@
                         }
                     </ul>
                 </div>
-                @foreach (var lang in Settings.ActiveLanguages)
+                @for (var i = 0; i < Model.Media.Translations.Count; i++)
                 {
-                    <div id='@($"lang_body_{lang}")' data-lang='@(lang)' class="lang_body card-body">
-                        <input hidden asp-for="@Model.MediaData[lang].LanguageId" />
+                    <div id='@($"lang_body_{Model.Media.Translations[i].LanguageId}")' data-lang='@(Model.Media.Translations[i].LanguageId)' class="lang_body card-body">
+                        <input hidden asp-for="@Model.Media.Translations[i].LanguageId" />
 
-                        <label asp-for="@Model.MediaData[lang].Title" class="control-label"></label>
-                        <input asp-for="@Model.MediaData[lang].Title" class="form-control" />
-                        <span asp-validation-for="@Model.MediaData[lang].Title" class="text-danger"></span>
+                        <label asp-for="@Model.Media.Translations[i].Title" class="control-label"></label>
+                        <input asp-for="@Model.Media.Translations[i].Title" class="form-control" />
+                        <span asp-validation-for="@Model.Media.Translations[i].Title" class="text-danger"></span>
 
-                        <label asp-for="@Model.MediaData[lang].Description" class="control-label"></label>
-                        <textarea type="text" rows="3" asp-for="@Model.MediaData[lang].Description" class="form-control"></textarea>
-                        <span asp-validation-for="@Model.MediaData[lang].Description" class="text-danger"></span>
+                        <label asp-for="@Model.Media.Translations[i].Description" class="control-label"></label>
+                        <textarea type="text" rows="3" asp-for="@Model.Media.Translations[i].Description" class="form-control"></textarea>
+                        <span asp-validation-for="@Model.Media.Translations[i].Description" class="text-danger"></span>
                         <br />
                             
-                        <input asp-for="@Model.MediaData[lang].FormFile" type="file" class="form-control select_file" id='@($"select_file_{lang}")' />
-                        <input hidden name="MediaData[@lang].Key" value="@lang" />
-                        <span asp-validation-for="@Model.MediaData[lang].Url" class="text-danger"></span>
-                        <div id='@($"preview_file_{lang}")' class="preview">
+                        <input asp-for="@Model.Media.Translations[i].File" type="file" class="form-control select_file" id='@($"select_file_{Model.Media.Translations[i].LanguageId}")' />
+                       
+                        <span asp-validation-for="@Model.Media.Translations[i].Url" class="text-danger"></span>
+                        <div id='@($"preview_file_{Model.Media.Translations[i].LanguageId}")' class="preview">
                             <p>No files currently selected for upload</p>
                         </div>
                     </div>

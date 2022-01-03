@@ -11,7 +11,7 @@
         <div class="card text-center">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills">
-                    @foreach (var trans in Model.Media.MediaTranslations)
+                    @foreach (var trans in Model.Media.Translations)
                     {
                         <li class="nav-item">
                             <a id='@($"lang_nav_{trans.LanguageId}")' data-lang='@trans.LanguageId' class="nav-link lang_nav" aria-current="true" href="#">@trans.LanguageId</a>
@@ -19,11 +19,11 @@
                     }
                 </ul>
             </div>
-            <input hidden asp-for="@Model.Media.MediaTypeId" />
+            <input hidden asp-for="@Model.Media.MediaType" />
           
-            @foreach (var trans in Model.Media.MediaTranslations)
+            @foreach (var trans in Model.Media.Translations)
             {
-                string src = $"{Model.Media.MediaTypeId}/{trans.Url}";
+                string src = $"{Model.Media.MediaType}/{trans.Url}";
 
                 <div class="lang_body card-body">
                     <label asp-for="@trans.Title" class="control-label"></label>
@@ -34,15 +34,15 @@
 
                     <label asp-for="@trans.Url" class="control-label d-block"></label>
                     
-                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Photo)
+                    @if (Model.Media.MediaType == MediaType.Photo)
                     {
                         <img class="img-fluid" src="@src" />
                     }
-                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Audio)
+                    @if (Model.Media.MediaType == MediaType.Audio)
                     {
                         <audio src="@src" controls></audio>
                     }
-                    @if (Model.Media.MediaTypeId == MediaTypeEnum.Video)
+                    @if (Model.Media.MediaType == MediaType.Video)
                     {
                         <video class="form-control img-fluid" src="@src" controls></video>
                     }

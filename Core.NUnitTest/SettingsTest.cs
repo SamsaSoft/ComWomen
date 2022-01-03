@@ -14,8 +14,8 @@ namespace Core.NUnitTest
         [Test, RequiresThread(System.Threading.ApartmentState.MTA)]
         public void MultiThreadTest() 
         {
-            var settings1 = new List<LanguageEnum>();
-            var settings2 = new List<LanguageEnum>();
+            var settings1 = new List<Language>();
+            var settings2 = new List<Language>();
             var t1 = Task.Run(() => { 
                 settings1.AddRange(Settings.ActiveLanguages);
                 Console.WriteLine(Thread.CurrentThread.ManagedThreadId); 

@@ -7,7 +7,6 @@ namespace Core.DataAccess
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
-        internal DbSet<MediaType> MediaTypes { get; set; }
         internal DbSet<Media> Medias { get; set; }
         internal DbSet<MediaTranslation> MediaTranslations { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -19,36 +18,19 @@ namespace Core.DataAccess
         {
             modelBuilder
                 .Entity<Media>()
-                .Property(e => e.MediaTypeId)
+                .Property(e => e.MediaType)
                 .HasConversion<int>();
 
             modelBuilder
                 .Entity<Media>()
-                .HasMany(e => e.MediaTranslations)
+                .HasMany(e => e.Translations)
                 .WithOne(o => o.Media)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder
                 .Entity<MediaTranslation>()
                 .HasQueryFilter(x => Settings.ActiveLanguages.Contains(x.LanguageId));
-
-            modelBuilder
-                .Entity<MediaType>()
-                .Property(e => e.Id)
-                .HasConversion<int>();
-
-            modelBuilder
-                .Entity<MediaType>().HasData(
-                    Enum.GetValues(typeof(MediaTypeEnum))
-                        .Cast<MediaTypeEnum>()
-                        .Select(e => new MediaType()
-                        {
-                            Id = e,
-                            Name = e.ToString(),
-                            IsEnabled = true
-                        })
-                );
-
+                       
             base.OnModelCreating(modelBuilder);
         }
     }

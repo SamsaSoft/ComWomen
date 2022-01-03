@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Model\" />
+    <Folder Include="Pages\Test\" />
     <Folder Include="wwwroot\audio\" />
     <Folder Include="wwwroot\controls\" />
     <Folder Include="wwwroot\images\" />

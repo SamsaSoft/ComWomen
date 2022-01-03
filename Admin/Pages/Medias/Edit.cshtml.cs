@@ -15,10 +15,10 @@ namespace Admin.Pages.Medias
         [BindProperty]
         public Media Media { get; set; }
         [BindProperty]
-        public Dictionary<LanguageEnum, IFormFile> Files { get; set; }
+        public Dictionary<Language, IFormFile> Files { get; set; }
 
         public IDictionary<string, string> MediaDirectoryDictionary => Enum
-            .GetValues<MediaTypeEnum>()
+            .GetValues<MediaType>()
             .ToDictionary(x => MediaTypeIdToClassName(x), x => x.ToString());
 
         [BindProperty(SupportsGet = true)]
@@ -55,7 +55,7 @@ namespace Admin.Pages.Medias
         private async Task ProcessingAttachFiles()
         {
             var wwwPath = _webHost.WebRootPath;
-            var classMedia = MediaTypeIdToClassName(Media.MediaTypeId);
+            var classMedia = MediaTypeIdToClassName(Media.MediaType);
             var mediaPath = Path.Combine(wwwPath, ClassNameToDirectory(classMedia));
             foreach (var item in Settings.ActiveLanguages)
             {

@@ -25,12 +25,12 @@
                 </ul>
             </div>
             <form method="post" class="text-center" enctype="multipart/form-data">
-                <input hidden asp-for="@Model.Media.MediaTypeId" />
+                <input hidden asp-for="@Model.Media.MediaType" />
                 <input hidden asp-for="@Model.Media.AuthorId" />
                 <input hidden asp-for="@Model.Media.CreatedAt" />
                 <input hidden asp-for="@Model.Media.Id" />
           
-                @foreach (var trans in Model.Media.MediaTranslations)
+                @foreach (var trans in Model.Media.Translations)
                 {
                     <div id='@($"lang_body_{trans.LanguageId}")' data-lang='@(trans.LanguageId)' class="lang_body card-body">
                         <input hidden asp-for="@trans.Id" />
@@ -46,7 +46,7 @@
                         <textarea rows="3" asp-for="@trans.Description" class="form-control"></textarea>
                         <span asp-validation-for="@trans.Description" class="text-danger"></span>
 
-                        <input asp-for="@Model.Files[trans.LanguageId]" data-url="@trans.Url" type="file" class="form-control select_file" accept="@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)/*" id='@($"select_file_{trans.LanguageId}")' />
+                        <input asp-for="@Model.Files[trans.LanguageId]" data-url="@trans.Url" type="file" class="form-control select_file" accept="@Model.MediaTypeIdToClassName(Model.Media.MediaType)/*" id='@($"select_file_{trans.LanguageId}")' />
                         <input hidden name="Files[@trans.LanguageId].Key" value="@trans.LanguageId" />
                         <span asp-validation-for="@trans.Url" class="text-danger"></span>
                         <div id='@($"preview_file_{trans.LanguageId}")' class="preview">
@@ -64,7 +64,7 @@
     <script src="~/js/media.js" asp-append-version="true"></script>
     <script>
         let directoryDictonaries = @(Json.Serialize(Model.MediaDirectoryDictionary));
-        let mediaClass = '@Model.MediaTypeIdToClassName(Model.Media.MediaTypeId)';
+        let mediaClass = '@Model.MediaTypeIdToClassName(Model.Media.MediaType)';
         function initMedia(inputChanged) {
             var inputFile = $(`#select_file_${activeFormLanguage}`).get();
             var url = "";
