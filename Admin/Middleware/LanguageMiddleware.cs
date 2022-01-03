@@ -18,15 +18,22 @@ namespace Admin.Middleware
             httpContext.Request.Method == "POST"
             && httpContext.Request.Query["handler"].Any(x => x == "language");
 
+        static readonly IList<string> CultureNames = Settings.ActiveLanguages
+                    .Select(c => c.ToString())
+                    .ToList();
+
         public Task Invoke(HttpContext httpContext)
         {
             if (IsPostLanguage(httpContext))
             {
-                var culture = httpContext.Request.Form["culture"];
+                var requestCulture = httpContext.Features.Get<IRequestCultureFeature>();
+                var itemIndex = CultureNames.IndexOf(requestCulture.RequestCulture.Culture.Name);
+                if (++itemIndex > CultureNames.Count - 1)
+                    itemIndex = 0;
                 var returnUrl = httpContext.Request.Query["returnUrl"];
                 httpContext.Response.Cookies.Append(
                     CookieRequestCultureProvider.DefaultCookieName,
-                    CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                    CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(CultureNames[itemIndex])),
                     new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
                 );
                 httpContext.Response.Redirect(returnUrl);

@@ -8,18 +8,7 @@
         <form asp-page-handler="language"
               asp-route-returnUrl="@Context.Request.Path"
               method="post" class="form-inline">
-            @{
-                var requestCulture = Context.Features.Get<IRequestCultureFeature>();
-                var cultureItems = Settings.ActiveLanguages
-                    .Select(c => c.ToString())
-                    .ToList();
-                var itemIndex = cultureItems.IndexOf(requestCulture.RequestCulture.Culture.Name);
-                if (++itemIndex > cultureItems.Count - 1)
-                    itemIndex = 0;
-                var item = cultureItems[itemIndex];
-            }
-            <input onclick="this.form.submit();" type="button" class="btn btn-outline-primary" value="@item">
-            <input type="hidden" value="@item" name="culture" />
+            <input onclick="this.form.submit();" type="button" class="btn btn-outline-primary" value="@Localizer["SwitchLang"]">
         </form>
     </li>
 </ul>
