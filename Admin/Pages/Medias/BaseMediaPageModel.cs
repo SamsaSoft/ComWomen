@@ -10,31 +10,26 @@ namespace Admin.Pages.Medias
         public BaseMediaPageModel(IMediaService mediaService)
         {
             _mediaService = mediaService;
-        }
+        }     
 
-        public string LanguageIdToCode(LanguageEnum language)
-        {
-            return _mediaService.LanguageIdToCode(language);
-        }
-
-        public string MediaTypeIdToClassName(MediaTypeEnum mediaType) 
+        public string MediaTypeIdToClassName(MediaType mediaType) 
         {
             return mediaType switch
             {
-                MediaTypeEnum.Photo => "image",
-                MediaTypeEnum.Video => "video",
-                MediaTypeEnum.Audio => "audio",
+                MediaType.Photo => "image",
+                MediaType.Video => "video",
+                MediaType.Audio => "audio",
                 _ => throw new ArgumentException("Not supported type"),
             };
         }
 
-        public MediaTypeEnum ClassNameToMediaTypeId(string className) 
+        public MediaType ClassNameToMediaTypeId(string className) 
         {
             return className switch
             {
-                "image" => MediaTypeEnum.Photo,
-                "video" => MediaTypeEnum.Video,
-                "audio" => MediaTypeEnum.Audio,
+                "image" => MediaType.Photo,
+                "video" => MediaType.Video,
+                "audio" => MediaType.Audio,
                 _ => throw new ArgumentException("Not supported type"),
             };
         }

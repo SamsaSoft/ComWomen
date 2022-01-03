@@ -5,7 +5,7 @@ namespace Admin.Pages.Medias
 {
     public class IndexModel : BaseMediaPageModel
     {
-        public LanguageEnum ActiveLanguage { get; set; }
+        public Language ActiveLanguage { get; set; }
 
         public IndexModel(IMediaService mediaService):base(mediaService)
         {
@@ -16,7 +16,7 @@ namespace Admin.Pages.Medias
 
         public async Task<IActionResult> OnGetAsync()
         {
-            ActiveLanguage = LanguageEnum.ky;
+            ActiveLanguage = Language.ky;
             Medias = await _mediaService.GetAll();
             return Page();
         }

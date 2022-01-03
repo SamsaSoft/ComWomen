@@ -3,6 +3,7 @@ using System;
 using Core.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220102124808_RemoveLanguage")]
+    partial class RemoveLanguage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,7 +134,7 @@ namespace Core.DataAccess.Migrations
                     b.Property<string>("EditorId")
                         .HasColumnType("text");
 
-                    b.Property<int>("MediaType")
+                    b.Property<int>("MediaTypeId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -140,6 +142,8 @@ namespace Core.DataAccess.Migrations
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("EditorId");
+
+                    b.HasIndex("MediaTypeId");
 
                     b.ToTable("Medias");
                 });
@@ -183,6 +187,42 @@ namespace Core.DataAccess.Migrations
                     b.HasIndex("MediaId");
 
                     b.ToTable("MediaTranslations");
+                });
+
+            modelBuilder.Entity("Core.DataAccess.Entities.MediaType", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MediaTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsEnabled = true,
+                            Name = "Photo"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsEnabled = true,
+                            Name = "Video"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsEnabled = true,
+                            Name = "Audio"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -305,6 +345,12 @@ namespace Core.DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("EditorId");
 
+                    b.HasOne("Core.DataAccess.Entities.MediaType", null)
+                        .WithMany("Medias")
+                        .HasForeignKey("MediaTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Author");
 
                     b.Navigation("Editor");
@@ -317,7 +363,7 @@ namespace Core.DataAccess.Migrations
                         .HasForeignKey("EditorId");
 
                     b.HasOne("Core.DataAccess.Entities.Media", "Media")
-                        .WithMany("Translations")
+                        .WithMany("MediaTranslations")
                         .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -379,7 +425,12 @@ namespace Core.DataAccess.Migrations
 
             modelBuilder.Entity("Core.DataAccess.Entities.Media", b =>
                 {
-                    b.Navigation("Translations");
+                    b.Navigation("MediaTranslations");
+                });
+
+            modelBuilder.Entity("Core.DataAccess.Entities.MediaType", b =>
+                {
+                    b.Navigation("Medias");
                 });
 #pragma warning restore 612, 618
         }

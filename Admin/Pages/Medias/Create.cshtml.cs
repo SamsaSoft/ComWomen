@@ -7,25 +7,23 @@ namespace Admin.Pages.Medias
     {
         private readonly IWebHostEnvironment _webHost;
 
-        public CreateModel(IMediaService mediaService, IWebHostEnvironment webHost):base(mediaService)
+        public CreateModel(IMediaService mediaService, IWebHostEnvironment webHost) : base(mediaService)
         {
             _webHost = webHost;
         }
 
+
+
         [BindProperty]
         public Media Media { get; set; }
-        [BindProperty]
-        public Dictionary<LanguageEnum, IFormFile> Files { get; set; }
-        public IEnumerable<LanguageEnum> ActiveLanguages => Enum.GetValues<LanguageEnum>();
+
         public async Task<IActionResult> OnGet()
         {
             Media = new Media
             {
-                MediaTypeId = MediaTypeEnum.Photo,
-                MediaTranslations = CreateMediaTranslationsAllLanguages().ToList(),
+                Translations = new List<MediaTranslation>(Settings.ActiveLanguages.Select(x => new MediaTranslation { LanguageId = x }))
             };
-            Files = CreateFileDictionaryAllLanguages();
-            await Task.CompletedTask;
+
             return Page();
         }
 
@@ -40,23 +38,23 @@ namespace Admin.Pages.Medias
                 ModelState.TryAddModelError("MediaTranslation_url", "At least one file must be selected and all selected files must be of the same type");
                 return Page();
             }
-            Media.MediaTypeId = ClassNameToMediaTypeId(GetClass());
+            Media.MediaType = ClassNameToMediaTypeId(GetClass());
             Media.AuthorId = GetCurrentUserId();
-            Media.CreatedAt = DateTime.UtcNow;
-            await ProcessingAttachFiles();
-            await _mediaService.Upload(Media);
+
+            await _mediaService.Create(Media);
             return RedirectToPage("index");
         }
 
         private bool CheckAttachFiles()
         {
-            if (Files.Values.All(x => x == null))
+
+            if (Media.Translations.All(x => x.File == null))
             {
                 return false;
             }
-            if (Files.Values
-                .Where(x => x != null)
-                .GroupBy(x => x.ContentType.Split("/").First())
+            if (Media.Translations
+                .Where(x => x.File != null)
+                .GroupBy(x => x.File.ContentType.Split("/").First())
                 .Count() > 1)
             {
                 return false;
@@ -64,68 +62,50 @@ namespace Admin.Pages.Medias
             return true;
         }
 
-        string GetClass() 
+        string GetClass()
         {
-            var first = Files.FirstOrDefault(x => x.Value != null);
-            if (first.Value == null)
+            var first = Media.Translations.FirstOrDefault(x => x.File != null);
+            if (first == null)
                 throw new Exception("Internal error");
-            var mimeType = first.Value.ContentType;
-            return mimeType.Split("/").First();
+
+            return first.File.ContentType.Split("/").First();
         }
 
         private async Task ProcessingAttachFiles()
         {
             var wwwPath = _webHost.WebRootPath;
-            var classMedia = GetClass();
-            var mediaPath = Path.Combine(wwwPath, ClassNameToDirectory(classMedia));
+            var classMedia = ClassNameToMediaTypeId(GetClass()).ToString();
+            var mediaPath = Path.Combine(wwwPath, classMedia);
             CreateDirectoryIfNotExists(mediaPath);
-            foreach (var item in ActiveLanguages)
+            foreach (var item in Media.Translations)
             {
-                if (Files[item] != null)
+                if (item.File != null)
                 {
-                    var fileName = await GenerateNameFile(Files[item]);
+                    var fileName = await GenerateNameFile(item.File);
                     var filePath = Path.Combine(mediaPath, fileName);
-                    Media[item].Url = fileName;
+                    item.Url = fileName;
                     if (System.IO.File.Exists(filePath))
                     {
                         continue;
                     }
                     using var stream = new FileStream(filePath, FileMode.CreateNew);
-                    await Files[item].CopyToAsync(stream);
+                    await item.File.CopyToAsync(stream);
                 }
             }
-            foreach (var item in Media.MediaTranslations.Where(x => string.IsNullOrEmpty(x.Url)))
+            foreach (var item in Media.Translations.Where(x => string.IsNullOrEmpty(x.Url)))
             {
-                item.Url = Media.MediaTranslations
-                    .Where(x =>!string.IsNullOrEmpty(x.Url))
-                    .Select(x=>x.Url)
+                item.Url = Media.Translations
+                    .Where(x => !string.IsNullOrEmpty(x.Url))
+                    .Select(x => x.Url)
                     .FirstOrDefault();
             }
         }
 
-        private void CreateDirectoryIfNotExists(string mediaPath)
+        private static void CreateDirectoryIfNotExists(string mediaPath)
         {
             if (!Directory.Exists(mediaPath))
             {
                 Directory.CreateDirectory(mediaPath);
-            }
-        }
-
-        private Dictionary<LanguageEnum, IFormFile> CreateFileDictionaryAllLanguages()
-        {
-            var files = new Dictionary<LanguageEnum, IFormFile>();
-            foreach (var item in ActiveLanguages)
-            {
-                files.Add(item, null);
-            }
-            return files;
-        }
-
-        private IEnumerable<MediaTranslation> CreateMediaTranslationsAllLanguages()
-        {
-            foreach (var item in ActiveLanguages)
-            {
-                yield return new MediaTranslation() { LanguageId = item };
             }
         }
     }

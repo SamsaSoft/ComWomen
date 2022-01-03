@@ -1,5 +1,6 @@
 ﻿using Core.Enums;
 using Core.Interfaces;
+using Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services
@@ -25,18 +26,18 @@ namespace Core.Services
         {
             var media = await _context.Medias
                 .Include(x => x.Author)
-                .Include(x => x.MediaTranslations)
+                .Include(x => x.Translations)
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (media is null)
                 throw new KeyNotFoundException($"Медиа с таким ключем не найдено");
             return media;
         }
 
-        public async Task<List<Media>> GetAllWithType(MediaTypeEnum type) =>
+        public async Task<List<Media>> GetAllWithType(MediaType type) =>
             await _context.Medias
-            .Where(x => x.MediaTypeId == type)
+            .Where(x => x.MediaType == type)
             .Include(x => x.Author)
-            .Include(x => x.MediaTranslations)
+            .Include(x => x.Translations)
             .ToListAsync();
 
         public async Task DelteById(int id)
@@ -52,18 +53,15 @@ namespace Core.Services
             await _context.SaveChangesAsync();
         }
 
-        public string LanguageIdToCode(LanguageEnum language)
-        {
-            var lang = _context.Languages.Find(language);
-            if (lang == null)
-                throw new KeyNotFoundException("This language is not in the database");
-            return lang.LanguageCode;
-        }
-
         public async Task<IEnumerable<Media>> GetAll() =>
             await _context.Medias
                     .Include(x => x.Author)
-                    .Include(x => x.MediaTranslations)
+                    .Include(x => x.Translations)
                     .ToListAsync();
+
+        public Task<OperationResult<int>> Create(Media media)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
