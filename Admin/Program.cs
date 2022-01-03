@@ -3,6 +3,9 @@ using Core.DataAccess;
 using Core.Services;
 using Core.Interfaces;
 using Core.DataAccess.Entities;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Admin.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +19,17 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AuthorizeFolder("/Medias"); 
+    options.Conventions.AuthorizeFolder("/Medias");
+}).AddViewLocalization();
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Language");
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = Enum.GetNames<Language>().Select(x => new CultureInfo(x)).ToList();
+    options.DefaultRequestCulture = new RequestCulture(Language.ru.ToString());
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
 });
 
 // DI
@@ -40,6 +53,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseRequestLocalization();
+
+app.UseLanguageMiddleware();
 
 app.UseAuthentication();
 app.UseAuthorization();
