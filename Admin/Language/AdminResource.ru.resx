@@ -129,4 +129,7 @@
   <data name="Logout" xml:space="preserve">
     <value>Выйти</value>
   </data>
+  <data name="SwitchLang" xml:space="preserve">
+    <value>ky</value>
+  </data>
 </root>

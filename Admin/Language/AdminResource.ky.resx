@@ -129,4 +129,7 @@
   <data name="Logout" xml:space="preserve">
     <value>чыгуу</value>
   </data>
+  <data name="SwitchLang" xml:space="preserve">
+    <value>ru</value>
+  </data>
 </root>
