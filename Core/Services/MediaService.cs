@@ -49,7 +49,18 @@ namespace Core.Services
 
         public async Task Update(Media media)
         {
-            _context.Update(media);
+            var dbMedia = await GetById(media.Id);
+            foreach (var item in media.Translations)
+            {
+                var translate = dbMedia[item.LanguageId];
+                if (translate != null) 
+                {
+                    translate.Url = item.Url;
+                    translate.Title = item.Title;
+                    translate.Description = item.Description;
+                }
+            }
+            _context.Update(dbMedia);
             await _context.SaveChangesAsync();
         }
 

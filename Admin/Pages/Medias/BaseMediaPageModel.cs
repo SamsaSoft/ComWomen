@@ -34,16 +34,6 @@ namespace Admin.Pages.Medias
             };
         }
 
-        public string ClassNameToDirectory(string className) 
-        {
-            return className switch
-            {
-                "image" => "images",
-                "video" => "video",
-                "audio" => "audio",
-                _ => throw new ArgumentException("Not supported class"),
-            };
-        }
         protected async Task<string> GenerateNameFile(IFormFile formFile)
         {
             System.Security.Cryptography.HashAlgorithm hashAlg = System.Security.Cryptography.MD5.Create();
