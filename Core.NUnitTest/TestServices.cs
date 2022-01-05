@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Core.Services;
 using System.Threading.Tasks;
 using Core.Interfaces;
+using Moq;
 
 namespace Core.NUnitTest
 {
@@ -17,11 +18,15 @@ namespace Core.NUnitTest
         public async Task MediaSimpleCreateTesting()
         {
             //asign
+            var mockFileService = new Mock<IFileService>(MockBehavior.Strict);
+            mockFileService.Setup(p => 
+                p.CreateFile(It.IsAny<Media>()))
+                .ReturnsAsync(()=>new Models.OperationResult<int>(true, string.Empty, 0));
             var dbContext = ApplicationDbContextTestFactory.Create();
-            IMediaService service = new MediaService(dbContext, ???);
+            IMediaService service = new MediaService(dbContext, mockFileService.Object);
             //act
             var media = new Media();
-            await service.Upload(media);
+            await service.Create(media);
             //assert
             media = await service.GetById(1);
             Assert.IsNotNull(media);
@@ -32,11 +37,15 @@ namespace Core.NUnitTest
         public async Task MediaSimpleDeleteTesting()
         {
             //asign
+            var mockFileService = new Mock<IFileService>(MockBehavior.Strict);
+            mockFileService.Setup(p =>
+                p.CreateFile(It.IsAny<Media>()))
+                .ReturnsAsync(() => new Models.OperationResult<int>(true, string.Empty, 0));
             var dbContext = ApplicationDbContextTestFactory.Create();
-            IMediaService service = new MediaService(dbContext);
+            IMediaService service = new MediaService(dbContext, mockFileService.Object);
             //act
             var media = new Media();
-            await service.Upload(media);
+            await service.Create(media);
             await service.DelteById(1);
             //assert
             Assert.ThrowsAsync<KeyNotFoundException>(async () => await service.GetById(1));
@@ -46,19 +55,23 @@ namespace Core.NUnitTest
         public async Task MediaGetAllWithTypeTesting()
         {
             //asign
+            var mockFileService = new Mock<IFileService>(MockBehavior.Strict);
+            mockFileService.Setup(p =>
+                p.CreateFile(It.IsAny<Media>()))
+                .ReturnsAsync(() => new Models.OperationResult<int>(true, string.Empty, 0));
             var dbContext = ApplicationDbContextTestFactory.Create();
-            IMediaService service = new MediaService(dbContext);
+            IMediaService service = new MediaService(dbContext, mockFileService.Object);
             //act
             var media = new Media
             {
                 MediaType = Enums.MediaType.Photo,
             };
-            await service.Upload(media);
+            await service.Create(media);
             media = new Media
             {
                 MediaType = Enums.MediaType.Photo,
             };
-            await service.Upload(media);
+            await service.Create(media);
             media = new Media
             {
                 MediaType = Enums.MediaType.Video,
