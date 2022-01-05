@@ -6,11 +6,8 @@ namespace Admin.Pages.Medias
 {
     public class EditModel : BaseMediaPageModel
     {
-        private readonly IFileService _fileService;
-
-        public EditModel(IMediaService mediaService, IFileService fileService) : base(mediaService)
+        public EditModel(IMediaService mediaService) : base(mediaService)
         {
-            _fileService = fileService;
         }
         [BindProperty]
         public Media Media { get; set; }
@@ -41,15 +38,14 @@ namespace Admin.Pages.Medias
             {
                 return Page();
             }
-            var result = await _fileService.UpdateFile(Media);
+            Media.EditorId = GetCurrentUserId();
+            Media.EditedAt = DateTime.UtcNow;
+            var result = await _mediaService.Update(Media);
             if (!result.IsSuccess)
             {
                 ModelState.TryAddModelError("MediaTranslation_url", result.Message);
                 return Page();
             }
-            Media.EditorId = GetCurrentUserId();
-            Media.EditedAt = DateTime.UtcNow;
-            await _mediaService.Update(Media);
             return RedirectToPage("index");
         }
     }
