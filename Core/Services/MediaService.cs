@@ -8,10 +8,12 @@ namespace Core.Services
     public class MediaService : IMediaService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IFileService _fileService;
 
-        public MediaService(ApplicationDbContext context)
+        public MediaService(ApplicationDbContext context, IFileService fileService)
         {
             _context = context;
+            _fileService = fileService;
         }
 
         public async Task<Media> Upload(Media media)
@@ -46,22 +48,34 @@ namespace Core.Services
             _context.Medias.Remove(media);
             await _context.SaveChangesAsync();
         }
-
-        public async Task Update(Media media)
+        public async Task<OperationResult<int>> Update(Media media)
         {
-            var dbMedia = await GetById(media.Id);
-            foreach (var item in media.Translations)
+            try
             {
-                var translate = dbMedia[item.LanguageId];
-                if (translate != null) 
+                var result = await _fileService.UpdateFile(media);
+                if (!result.IsSuccess)
                 {
-                    translate.Url = item.Url;
-                    translate.Title = item.Title;
-                    translate.Description = item.Description;
+                    return result;
                 }
+                var dbMedia = await GetById(media.Id);
+                foreach (var item in media.Translations)
+                {
+                    var translate = dbMedia[item.LanguageId];
+                    if (translate != null)
+                    {
+                        translate.Url = item.Url;
+                        translate.Title = item.Title;
+                        translate.Description = item.Description;
+                    }
+                }
+                _context.Update(dbMedia);
+                await _context.SaveChangesAsync();
+                return new OperationResult<int>(true, string.Empty, dbMedia.Id);
             }
-            _context.Update(dbMedia);
-            await _context.SaveChangesAsync();
+            catch (Exception ex) 
+            {
+                return new OperationResult<int>(false, ex.Message, 0);
+            }
         }
 
         public async Task<IEnumerable<Media>> GetAll() =>
@@ -70,9 +84,23 @@ namespace Core.Services
                     .Include(x => x.Translations)
                     .ToListAsync();
 
-        public Task<OperationResult<int>> Create(Media media)
+        public async Task<OperationResult<int>> Create(Media media)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _fileService.CreateFile(media);
+                if (!result.IsSuccess)
+                {
+                    return result;
+                }
+                _context.Add(media);
+                await _context.SaveChangesAsync();
+                return new OperationResult<int>(true, string.Empty, media.Id);
+            }
+            catch (Exception ex)
+            {
+                return new OperationResult<int>(false, ex.Message, 0);
+            }
         }
     }
 }

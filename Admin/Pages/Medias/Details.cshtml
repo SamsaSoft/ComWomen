@@ -23,9 +23,9 @@
           
             @foreach (var trans in Model.Media.Translations)
             {
-                string src = $"{Model.Media.MediaType}/{trans.Url}";
+                string src = $"/{Model.Media.MediaType}/{trans.Url}";
 
-                <div class="lang_body card-body">
+                <div id='@($"lang_body_{trans.LanguageId}")' data-lang='@(trans.LanguageId)' class="lang_body card-body">
                     <label asp-for="@trans.Title" class="control-label"></label>
                     <span asp-for="@trans.Title" class="form-control">@trans.Title</span>
 

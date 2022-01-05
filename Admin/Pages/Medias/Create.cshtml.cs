@@ -5,11 +5,8 @@ namespace Admin.Pages.Medias
 {
     public class CreateModel : BaseMediaPageModel
     {
-        private readonly IFileService _fileService;
-
-        public CreateModel(IMediaService mediaService, IFileService fileService) : base(mediaService)
+        public CreateModel(IMediaService mediaService) : base(mediaService)
         {
-            _fileService = fileService;
         }
 
         [BindProperty]
@@ -30,14 +27,14 @@ namespace Admin.Pages.Medias
             {
                 return Page();
             }
-            var result = await _fileService.CreateFile(Media);
+            Media.AuthorId = GetCurrentUserId();
+            Media.CreatedAt = DateTime.UtcNow;
+            var result = await _mediaService.Create(Media);
             if (!result.IsSuccess)
             {
                 ModelState.TryAddModelError("MediaTranslation_url", result.Message);
                 return Page();
             }
-            Media.AuthorId = GetCurrentUserId();
-            await _mediaService.Create(Media);
             return RedirectToPage("index");
         }
     }

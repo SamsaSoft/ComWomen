@@ -21,28 +21,28 @@ namespace Core.Services
             this.wwwRootPath = hostingEnvironment.WebRootPath;
         }
 
-        public async Task<OperationResult<string>> UpdateFile(Media media)
+        public async Task<OperationResult<int>> UpdateFile(Media media)
         {
             if (!CheckAttachFilesFromMediaType(media, media.MediaType))
             {
-                return new OperationResult<string>(false, $"Selected files must be of the type {media.MediaType}", string.Empty);
+                return new OperationResult<int>(false, $"Selected files must be of the type {media.MediaType}", media.Id);
             }
             var classMedia = media.MediaType;
             await CreateFilesFromMedia(media, classMedia);
-            return new OperationResult<string>(true, string.Empty, string.Empty);
+            return new OperationResult<int>(true, string.Empty, media.Id);
         }
 
-        public async Task<OperationResult<string>> CreateFile(Media media)
+        public async Task<OperationResult<int>> CreateFile(Media media)
         {
             if (!CheckAttachFiles(media))
             {
-                return new OperationResult<string>(false, "At least one file must be selected and all selected files must be of the same type", string.Empty);
+                return new OperationResult<int>(false, "At least one file must be selected and all selected files must be of the same type", 0);
             }
             var classMedia = ClassNameToMediaTypeId(GetClass(media));
             media.MediaType = classMedia;
             await CreateFilesFromMedia(media, classMedia);
             UpdateEmptyUrl(media);
-            return new OperationResult<string>(true, string.Empty, string.Empty);
+            return new OperationResult<int>(true, string.Empty, 0);
         }
 
         private static void UpdateEmptyUrl(Media media)
