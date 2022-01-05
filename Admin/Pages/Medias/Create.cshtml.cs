@@ -16,7 +16,7 @@ namespace Admin.Pages.Medias
         {
             Media = new Media
             {
-                Translations = new List<MediaTranslation>(Settings.ActiveLanguages.Select(x => new MediaTranslation { LanguageId = x }))
+                Translations = new List<MediaTranslation>(Settings.ActiveLanguages.Select(x => new MediaTranslation { Language = x }))
             };
 
             return Page();

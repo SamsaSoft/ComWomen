@@ -29,7 +29,7 @@ namespace Core.DataAccess
 
             modelBuilder
                 .Entity<MediaTranslation>()
-                .HasQueryFilter(x => Settings.ActiveLanguages.Contains(x.LanguageId));
+                .HasQueryFilter(x => Settings.ActiveLanguages.Contains(x.Language));
                        
             base.OnModelCreating(modelBuilder);
         }

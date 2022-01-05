@@ -60,7 +60,7 @@ namespace Core.Services
                 var dbMedia = await GetById(media.Id);
                 foreach (var item in media.Translations)
                 {
-                    var translate = dbMedia[item.LanguageId];
+                    var translate = dbMedia[item.Language];
                     if (translate != null)
                     {
                         translate.Url = item.Url;

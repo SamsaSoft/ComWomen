@@ -17,7 +17,7 @@ namespace Core.DataAccess.Entities
         public MediaTranslation this[Language language] 
         {
             get { 
-                var translation = Translations.FirstOrDefault(x => x.LanguageId == language);
+                var translation = Translations.FirstOrDefault(x => x.Language == language);
                 if (translation == null)
                     return new MediaTranslation();
                 return translation;

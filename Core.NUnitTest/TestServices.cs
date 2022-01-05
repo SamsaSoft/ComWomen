@@ -18,7 +18,7 @@ namespace Core.NUnitTest
         {
             //asign
             var dbContext = ApplicationDbContextTestFactory.Create();
-            IMediaService service = new MediaService(dbContext);
+            IMediaService service = new MediaService(dbContext, ???);
             //act
             var media = new Media();
             await service.Upload(media);

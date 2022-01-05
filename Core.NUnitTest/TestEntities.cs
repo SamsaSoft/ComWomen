@@ -59,14 +59,14 @@ namespace Core.NUnitTest
                         Description = "Description",
                         Title = "Title",
                         Url = "https://images.com/image?id=1",
-                        LanguageId = Enums.Language.ky,
+                        Language = Enums.Language.ky,
                     },
                     new MediaTranslation
                     {
                         Description = "Описание",
                         Title = "Название",
                         Url = "https://images.com/image?id=1&lg=ru",
-                        LanguageId = Enums.Language.ru,
+                        Language = Enums.Language.ru,
 
                     },
                 },
@@ -82,7 +82,7 @@ namespace Core.NUnitTest
             CollectionAssert.IsNotEmpty(media?.Translations);
             CollectionAssert.IsSubsetOf(
                 new[] { Enums.Language.ky, Enums.Language.ru },
-                media?.Translations.Select(x=>x.LanguageId));
+                media?.Translations.Select(x=>x.Language));
         }
 
         private Media CreateMedia() 
@@ -97,14 +97,14 @@ namespace Core.NUnitTest
                         Description = "Description",
                         Title = "Title",
                         Url = "https://images.com/image?id=1",
-                        LanguageId = Enums.Language.ky,
+                        Language = Enums.Language.ky,
                     },
                     new MediaTranslation
                     {
                         Description = "Описание",
                         Title = "Название",
                         Url = "https://images.com/image?id=1&lg=ru",
-                        LanguageId = Enums.Language.ru,
+                        Language = Enums.Language.ru,
 
                     },
                 },
@@ -162,7 +162,7 @@ namespace Core.NUnitTest
             Assert.IsNotNull(media);
             Assert.IsNotNull(media?.Translations);
             CollectionAssert.IsNotEmpty(media?.Translations);
-            var mediaTranslation = media.Translations.FirstOrDefault(e=>e.LanguageId == Enums.Language.ru);
+            var mediaTranslation = media.Translations.FirstOrDefault(e=>e.Language == Enums.Language.ru);
             Assert.IsNotNull(mediaTranslation);
             mediaTranslation.Description = "Описание 2";
             dbContext.SaveChanges();
@@ -171,7 +171,7 @@ namespace Core.NUnitTest
             Assert.IsNotNull(media);
             Assert.IsNotNull(media?.Translations);
             CollectionAssert.IsNotEmpty(media?.Translations);
-            mediaTranslation = media.Translations.FirstOrDefault(e => e.LanguageId == Enums.Language.ru);
+            mediaTranslation = media.Translations.FirstOrDefault(e => e.Language == Enums.Language.ru);
             Assert.IsNotNull(mediaTranslation);
             Assert.AreEqual("Описание 2", mediaTranslation?.Description);
         }

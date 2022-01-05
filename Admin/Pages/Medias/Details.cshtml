@@ -14,7 +14,7 @@
                     @foreach (var trans in Model.Media.Translations)
                     {
                         <li class="nav-item">
-                            <a id='@($"lang_nav_{trans.LanguageId}")' data-lang='@trans.LanguageId' class="nav-link lang_nav" aria-current="true" href="#">@trans.LanguageId</a>
+                            <a id='@($"lang_nav_{trans.Language}")' data-lang='@trans.Language' class="nav-link lang_nav" aria-current="true" href="#">@trans.Language</a>
                         </li>
                     }
                 </ul>
@@ -25,7 +25,7 @@
             {
                 string src = $"/{Model.Media.MediaType}/{trans.Url}";
 
-                <div id='@($"lang_body_{trans.LanguageId}")' data-lang='@(trans.LanguageId)' class="lang_body card-body">
+                <div id='@($"lang_body_{trans.Language}")' data-lang='@(trans.Language)' class="lang_body card-body">
                     <label asp-for="@trans.Title" class="control-label"></label>
                     <span asp-for="@trans.Title" class="form-control">@trans.Title</span>
 
