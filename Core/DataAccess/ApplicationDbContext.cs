@@ -9,6 +9,9 @@ namespace Core.DataAccess
     {
         internal DbSet<Media> Medias { get; set; }
         internal DbSet<MediaTranslation> MediaTranslations { get; set; }
+        internal DbSet<News> News { get; set; }
+        internal DbSet<NewsTranslation> NewsTranslations { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -29,6 +32,16 @@ namespace Core.DataAccess
 
             modelBuilder
                 .Entity<MediaTranslation>()
+                .HasQueryFilter(x => Settings.ActiveLanguages.Contains(x.Language));
+
+            modelBuilder
+                .Entity<News>()
+                .HasMany(e => e.Translations)
+                .WithOne(o => o.News)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder
+                .Entity<NewsTranslation>()
                 .HasQueryFilter(x => Settings.ActiveLanguages.Contains(x.Language));
                        
             base.OnModelCreating(modelBuilder);
