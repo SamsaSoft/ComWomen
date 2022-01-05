@@ -14,7 +14,7 @@ namespace Core.DataAccess.Entities
         public string Description { get; set; }
         public string Url { get; set; }
         public Language Language { get; set; }
-        public int? MediaId { get; set; }
+        public int MediaId { get; set; }
         public Media Media { get; set; }
 
         [NotMapped]
