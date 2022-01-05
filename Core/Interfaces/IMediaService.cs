@@ -15,7 +15,7 @@ namespace Core.Interfaces
         Task<List<Media>> GetAllWithType(MediaType type);
         Task<Media> GetById(int id);
         Task<Media> Upload(Media media);
-        Task Update(Media media);
+        Task<OperationResult<int>> Update(Media media);
         Task<IEnumerable<Media>> GetAll();
     }
 }

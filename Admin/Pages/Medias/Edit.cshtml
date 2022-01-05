@@ -30,9 +30,9 @@
                 <input hidden asp-for="@Model.Media.MediaType" />
                 @for (var i = 0; i < Model.Media.Translations.Count; i++)
                 {
-                    <div id='@($"lang_body_{Model.Media.Translations[i].LanguageId}")' data-lang='@(Model.Media.Translations[i].LanguageId)' class="lang_body card-body">
+                    <div id='@($"lang_body_{Model.Media.Translations[i].Language}")' data-lang='@(Model.Media.Translations[i].Language)' class="lang_body card-body">
                         <input hidden asp-for="@Model.Media.Translations[i].Id" />
-                        <input hidden asp-for="@Model.Media.Translations[i].LanguageId" />
+                        <input hidden asp-for="@Model.Media.Translations[i].Language" />
 
                         <label asp-for="@Model.Media.Translations[i].Title" class="control-label"></label>
                         <input asp-for="@Model.Media.Translations[i].Title" class="form-control" />
@@ -42,10 +42,10 @@
                         <textarea rows="3" asp-for="@Model.Media.Translations[i].Description" class="form-control"></textarea>
                         <span asp-validation-for="@Model.Media.Translations[i].Description" class="text-danger"></span>
 
-                        <input asp-for="@Model.Media.Translations[i].File" data-url="@Model.Media.Translations[i].Url" type="file" class="form-control select_file" accept="@FileService.MediaTypeIdToClassName(Model.Media.MediaType)/*" id='@($"select_file_{Model.Media.Translations[i].LanguageId}")' />
+                        <input asp-for="@Model.Media.Translations[i].File" data-url="@Model.Media.Translations[i].Url" type="file" class="form-control select_file" accept="@FileService.MediaTypeIdToClassName(Model.Media.MediaType)/*" id='@($"select_file_{Model.Media.Translations[i].Language}")' />
                         <input hidden asp-for="@Model.Media.Translations[i].Url" />
-                        <input hidden name="Files[@Model.Media.Translations[i].LanguageId].Key" value="@Model.Media.Translations[i].LanguageId" />
-                        <div id='@($"preview_file_{Model.Media.Translations[i].LanguageId}")' class="preview">
+                        <input hidden name="Files[@Model.Media.Translations[i].Language].Key" value="@Model.Media.Translations[i].Language" />
+                        <div id='@($"preview_file_{Model.Media.Translations[i].Language}")' class="preview">
                             <p>No files currently selected for upload</p>
                         </div>
                     </div>
