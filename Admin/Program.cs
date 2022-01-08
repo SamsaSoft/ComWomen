@@ -6,6 +6,7 @@ using Core.DataAccess.Entities;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Admin.Middleware;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/Medias");
@@ -35,7 +37,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 // DI
 builder.Services.AddScoped<IMediaService, MediaService>();
 builder.Services.AddScoped<IFileService, FileService>();
-
+builder.Services.AddSession();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -52,15 +54,16 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession();
 
 app.UseRouting();
 
 app.UseRequestLocalization();
 
-app.UseLanguageMiddleware();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseLanguageMiddleware();
 
 app.MapRazorPages();
 

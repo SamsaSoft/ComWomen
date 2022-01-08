@@ -1,6 +1,7 @@
 ﻿using Core.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Globalization;
 
 namespace Core.DataAccess
@@ -15,6 +16,11 @@ namespace Core.DataAccess
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.LogTo(Console.WriteLine, LogLevel.Debug);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

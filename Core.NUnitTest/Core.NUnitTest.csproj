@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NewsTest.cs" />
     <Compile Remove="TestServices.cs" />
   </ItemGroup>
 
