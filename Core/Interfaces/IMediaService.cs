@@ -11,8 +11,9 @@ namespace Core.Interfaces
         /// <param name="media">Media entity</param>
         /// <returns></returns>
         Task<OperationResult<int>> Create(Media media);
+        Task<OperationResult<List<int>>> CreateList(List<Media> medias);
         Task DelteById(int id);
-        Task<List<Media>> GetAllWithType(MediaType type);
+        Task<List<Media>> GetAllByType(MediaType type);
         Task<Media> GetById(int id);
         Task<Media> Upload(Media media);
         Task<OperationResult<int>> Update(Media media);

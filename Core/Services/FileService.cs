@@ -1,10 +1,5 @@
 ﻿using Core.Interfaces;
 using Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Core.Enums;
@@ -141,6 +136,11 @@ namespace Core.Services
                 .Where(x => x.File != null)
                 .GroupBy(x => x.File.ContentType.Split("/").First())
                 .Count() == 1;
+        }
+
+        public Task<OperationResult<int>> DeleteFile(Media media)
+        {
+            throw new NotImplementedException();
         }
     }
 }
