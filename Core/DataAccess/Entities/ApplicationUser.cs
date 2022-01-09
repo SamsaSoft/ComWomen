@@ -9,7 +9,7 @@ namespace Core.DataAccess.Entities
 
     public static class ClaimsPrincipalExtensions 
     {
-        public static string Language (this ClaimsPrincipal claims) =>
+        public static string GetLanguage (this ClaimsPrincipal claims) =>
             claims.FindFirstValue("language");
     }
 }

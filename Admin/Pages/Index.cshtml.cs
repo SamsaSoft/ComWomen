@@ -22,7 +22,7 @@ namespace Admin.Pages
         {
             try
             {
-                var lang = HttpContext.User.Language();
+                var lang = HttpContext.User.GetLanguage();
                 //var userId = GetCurrentUserId();
                 //var item = new Media
                 //{

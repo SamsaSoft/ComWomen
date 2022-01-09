@@ -29,30 +29,43 @@ namespace Admin.Middleware
                                      SignInManager<ApplicationUser> signInManager,
                                      ApplicationUser user)
         {
-            var lang = httpContext.Session.GetString("language");
-            if (!string.IsNullOrEmpty(lang) && user != null)
+            var clang = httpContext.User.GetLanguage();
+            var slang = httpContext.Session.GetString("language");
+            if (!string.IsNullOrEmpty(clang) && !string.IsNullOrEmpty(slang) && clang != slang)
+            {
+                await UpdateLanguage(httpContext, signInManager, user, clang);
+                httpContext.Response.Redirect(httpContext.Request.Path);
                 return;
+            }
+            if ((!string.IsNullOrEmpty(clang) && string.IsNullOrEmpty(slang)))
+            {
+                httpContext.Response.Cookies.Append(
+                    CookieRequestCultureProvider.DefaultCookieName,
+                    CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(clang)),
+                    new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+                );
+                httpContext.Session.SetString("language", clang);
+                httpContext.Response.Redirect(httpContext.Request.Path);
+                return;
+            }
+            if (!string.IsNullOrEmpty(clang) || user != null)
+                return;
+            if (!string.IsNullOrEmpty(slang))//anonymous
+            {
+                ((ClaimsIdentity)httpContext.User.Identity).AddClaim(new Claim("language", slang));
+                return;
+            }
             var requestCulture = httpContext.Features.Get<IRequestCultureFeature>();
             if (requestCulture == null)
                 throw new Exception("UseRequestLocalization has not been added");
-            lang = httpContext.User.Language();
-            if (string.IsNullOrEmpty(lang))
-            {
-                lang = requestCulture.RequestCulture.UICulture.Name;
-                if (user == null)//anonymous
-                {
-                    ((ClaimsIdentity)httpContext.User.Identity).AddClaim(new Claim("language", lang));
-                    httpContext.Session.SetString("language", lang);
-                    return;
-                }
-                await UpdateLanguage(httpContext, signInManager, user, lang);
-                return;
-            }
-            if (requestCulture.RequestCulture.UICulture.Name != lang)
+            var lang = requestCulture.RequestCulture.UICulture.Name;
+            if (user != null)
             {
                 await UpdateLanguage(httpContext, signInManager, user, lang);
                 httpContext.Response.Redirect(httpContext.Request.Path);
+                return;
             }
+            await UpdateLanguage(httpContext, signInManager, user, lang);
         }
 
         async Task UpdateLanguage(HttpContext httpContext, SignInManager<ApplicationUser> signInManager, ApplicationUser user, string lang)
@@ -62,8 +75,11 @@ namespace Admin.Middleware
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(lang)),
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
-            if (user == null)
+            if (user == null) 
+            {
+                ((ClaimsIdentity)httpContext.User.Identity).AddClaim(new Claim("language", lang));
                 return;
+            }
             httpContext.Session.SetString("language", lang);
             var userManager = signInManager.UserManager;
             var claim = httpContext.User.Claims.FirstOrDefault((x) => x.Type == "language");
@@ -77,17 +93,6 @@ namespace Admin.Middleware
             }
             await userManager.UpdateAsync(user);
             await signInManager.RefreshSignInAsync(user);
-        }
-
-        async Task<bool> OnLoginClearSession(HttpContext httpContext)
-        {
-            if (httpContext.Request.Path.Value.ToLower() == "/identity/account/login")
-            {
-                httpContext.Session.Remove("language");
-                await _next.Invoke(httpContext);
-                return true;
-            }
-            return false;
         }
 
         async Task OnPostLanguage(HttpContext httpContext, SignInManager<ApplicationUser> signInManager, ApplicationUser user)
@@ -106,8 +111,6 @@ namespace Admin.Middleware
 
         public async Task InvokeAsync(HttpContext httpContext, SignInManager<ApplicationUser> signInManager)
         {
-            var result = await OnLoginClearSession(httpContext);
-            if (result) return;
             var userManager = signInManager.UserManager;
             var user = await userManager.GetUserAsync(httpContext.User);
             await InitLanguageClaim(httpContext, signInManager, user);

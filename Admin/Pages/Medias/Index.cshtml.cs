@@ -17,7 +17,7 @@ namespace Admin.Pages.Medias
 
         public async Task<IActionResult> OnGetAsync()
         {
-            ActiveLanguage = Enum.Parse<Language>(HttpContext.User.Language());
+            ActiveLanguage = Enum.Parse<Language>(HttpContext.User.GetLanguage());
             Medias = await _mediaService.GetAll();
             return Page();
         }
