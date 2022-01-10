@@ -25,6 +25,10 @@ builder.Services.AddRazorPages(options =>
 }).AddViewLocalization();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Language");
+builder.Services.AddRazorPages()
+    .AddDataAnnotationsLocalization(options =>
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(Admin.AdminResource)));
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
@@ -32,6 +36,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.DefaultRequestCulture = new RequestCulture(Settings.DefaultLanguage.ToString());
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
+    options.AddInitialRequestCultureProvider(new SessionRequestCultureProvider());
+    options.AddInitialRequestCultureProvider(new UserClaimRequestCultureProvider());
 });
 
 // DI
@@ -58,11 +64,10 @@ app.UseSession();
 
 app.UseRouting();
 
-app.UseRequestLocalization();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseRequestLocalization();
 app.UseLanguageMiddleware();
 
 app.MapRazorPages();

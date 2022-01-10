@@ -25,47 +25,15 @@ namespace Admin.Middleware
                     .Select(c => c.ToString())
                     .ToList();
 
-        async Task InitLanguageClaim(HttpContext httpContext,
-                                     SignInManager<ApplicationUser> signInManager,
-                                     ApplicationUser user)
+        Task InitLanguageClaim(HttpContext httpContext, ApplicationUser user)
         {
-            var clang = httpContext.User.GetLanguage();
-            var slang = httpContext.Session.GetString("language");
-            if (!string.IsNullOrEmpty(clang) && !string.IsNullOrEmpty(slang) && clang != slang)
+            if (user == null)
             {
-                await UpdateLanguage(httpContext, signInManager, user, clang);
-                httpContext.Response.Redirect(httpContext.Request.Path);
-                return;
+                var requestCulture = httpContext.Features.Get<IRequestCultureFeature>();
+                ((ClaimsIdentity)httpContext.User.Identity)
+                    .AddClaim(new Claim("language", requestCulture.RequestCulture.Culture.Name));
             }
-            if ((!string.IsNullOrEmpty(clang) && string.IsNullOrEmpty(slang)))
-            {
-                httpContext.Response.Cookies.Append(
-                    CookieRequestCultureProvider.DefaultCookieName,
-                    CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(clang)),
-                    new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-                );
-                httpContext.Session.SetString("language", clang);
-                httpContext.Response.Redirect(httpContext.Request.Path);
-                return;
-            }
-            if (!string.IsNullOrEmpty(clang) || user != null)
-                return;
-            if (!string.IsNullOrEmpty(slang))//anonymous
-            {
-                ((ClaimsIdentity)httpContext.User.Identity).AddClaim(new Claim("language", slang));
-                return;
-            }
-            var requestCulture = httpContext.Features.Get<IRequestCultureFeature>();
-            if (requestCulture == null)
-                throw new Exception("UseRequestLocalization has not been added");
-            var lang = requestCulture.RequestCulture.UICulture.Name;
-            if (user != null)
-            {
-                await UpdateLanguage(httpContext, signInManager, user, lang);
-                httpContext.Response.Redirect(httpContext.Request.Path);
-                return;
-            }
-            await UpdateLanguage(httpContext, signInManager, user, lang);
+            return Task.CompletedTask;
         }
 
         async Task UpdateLanguage(HttpContext httpContext, SignInManager<ApplicationUser> signInManager, ApplicationUser user, string lang)
@@ -75,14 +43,15 @@ namespace Admin.Middleware
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(lang)),
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
-            if (user == null) 
+            httpContext.Session.SetString("language", lang);
+            if (user == null)
             {
-                ((ClaimsIdentity)httpContext.User.Identity).AddClaim(new Claim("language", lang));
                 return;
             }
-            httpContext.Session.SetString("language", lang);
-            var userManager = signInManager.UserManager;
             var claim = httpContext.User.Claims.FirstOrDefault((x) => x.Type == "language");
+            if (claim?.Value == lang)
+                return;
+            var userManager = signInManager.UserManager;
             if (claim == null)
             {
                 await userManager.AddClaimAsync(user, new Claim("language", lang));
@@ -113,7 +82,7 @@ namespace Admin.Middleware
         {
             var userManager = signInManager.UserManager;
             var user = await userManager.GetUserAsync(httpContext.User);
-            await InitLanguageClaim(httpContext, signInManager, user);
+            await InitLanguageClaim(httpContext, user);
             await OnPostLanguage(httpContext, signInManager, user);
             await _next.Invoke(httpContext);
         }
