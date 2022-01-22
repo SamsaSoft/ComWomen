@@ -1,4 +1,5 @@
 using Core.Interfaces;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Admin.Pages.Medias
@@ -16,7 +17,8 @@ namespace Admin.Pages.Medias
 
         public async Task<IActionResult> OnGetAsync()
         {
-            ActiveLanguage = Language.ky;
+            var requestCulture = HttpContext.Features.Get<IRequestCultureFeature>();
+            ActiveLanguage = Enum.Parse<Language>(requestCulture.RequestCulture.Culture.Name);
             Medias = await _mediaService.GetAll();
             return Page();
         }

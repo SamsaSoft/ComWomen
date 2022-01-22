@@ -3,6 +3,7 @@ using System;
 using Core.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220105113454_EditMediaTranslation")]
+    partial class EditMediaTranslation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,16 +137,11 @@ namespace Core.DataAccess.Migrations
                     b.Property<int>("MediaType")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("NewsTranslationId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("EditorId");
-
-                    b.HasIndex("NewsTranslationId");
 
                     b.ToTable("Medias");
                 });
@@ -180,65 +177,6 @@ namespace Core.DataAccess.Migrations
                     b.HasIndex("MediaId");
 
                     b.ToTable("MediaTranslations");
-                });
-
-            modelBuilder.Entity("Core.DataAccess.Entities.News", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AuthorId")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("EditedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("EditorId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("EditorId");
-
-                    b.ToTable("News");
-                });
-
-            modelBuilder.Entity("Core.DataAccess.Entities.NewsTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("Language")
-                        .HasColumnType("smallint");
-
-                    b.Property<int>("NewsId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NewsId");
-
-                    b.ToTable("NewsTranslations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -361,10 +299,6 @@ namespace Core.DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("EditorId");
 
-                    b.HasOne("Core.DataAccess.Entities.NewsTranslation", null)
-                        .WithMany("Media")
-                        .HasForeignKey("NewsTranslationId");
-
                     b.Navigation("Author");
 
                     b.Navigation("Editor");
@@ -379,32 +313,6 @@ namespace Core.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Media");
-                });
-
-            modelBuilder.Entity("Core.DataAccess.Entities.News", b =>
-                {
-                    b.HasOne("Core.DataAccess.Entities.ApplicationUser", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
-
-                    b.HasOne("Core.DataAccess.Entities.ApplicationUser", "Editor")
-                        .WithMany()
-                        .HasForeignKey("EditorId");
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Editor");
-                });
-
-            modelBuilder.Entity("Core.DataAccess.Entities.NewsTranslation", b =>
-                {
-                    b.HasOne("Core.DataAccess.Entities.News", "News")
-                        .WithMany("Translations")
-                        .HasForeignKey("NewsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("News");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -461,16 +369,6 @@ namespace Core.DataAccess.Migrations
             modelBuilder.Entity("Core.DataAccess.Entities.Media", b =>
                 {
                     b.Navigation("Translations");
-                });
-
-            modelBuilder.Entity("Core.DataAccess.Entities.News", b =>
-                {
-                    b.Navigation("Translations");
-                });
-
-            modelBuilder.Entity("Core.DataAccess.Entities.NewsTranslation", b =>
-                {
-                    b.Navigation("Media");
                 });
 #pragma warning restore 612, 618
         }

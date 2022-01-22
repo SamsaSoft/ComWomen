@@ -26,8 +26,8 @@
                 </div>
                 @for (var i = 0; i < Model.Media.Translations.Count; i++)
                 {
-                    <div id='@($"lang_body_{Model.Media.Translations[i].LanguageId}")' data-lang='@(Model.Media.Translations[i].LanguageId)' class="lang_body card-body">
-                        <input hidden asp-for="@Model.Media.Translations[i].LanguageId" />
+                    <div id='@($"lang_body_{Model.Media.Translations[i].Language}")' data-lang='@(Model.Media.Translations[i].Language)' class="lang_body card-body">
+                        <input hidden asp-for="@Model.Media.Translations[i].Language" />
 
                         <label asp-for="@Model.Media.Translations[i].Title" class="control-label"></label>
                         <input asp-for="@Model.Media.Translations[i].Title" class="form-control" />
@@ -38,10 +38,10 @@
                         <span asp-validation-for="@Model.Media.Translations[i].Description" class="text-danger"></span>
                         <br />
                             
-                        <input asp-for="@Model.Media.Translations[i].File" type="file" class="form-control select_file" id='@($"select_file_{Model.Media.Translations[i].LanguageId}")' />
+                        <input asp-for="@Model.Media.Translations[i].File" type="file" class="form-control select_file" id='@($"select_file_{Model.Media.Translations[i].Language}")' />
                        
                         <span asp-validation-for="@Model.Media.Translations[i].Url" class="text-danger"></span>
-                        <div id='@($"preview_file_{Model.Media.Translations[i].LanguageId}")' class="preview">
+                        <div id='@($"preview_file_{Model.Media.Translations[i].Language}")' class="preview">
                             <p>No files currently selected for upload</p>
                         </div>
                     </div>

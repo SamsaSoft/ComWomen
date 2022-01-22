@@ -37,6 +37,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 // DI
 builder.Services.AddScoped<IMediaService, MediaService>();
+builder.Services.AddScoped<IFileService, FileService>();
+
 builder.Services.AddSession();
 var app = builder.Build();
 
