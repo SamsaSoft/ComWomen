@@ -60,12 +60,11 @@ app.UseSession();
 
 app.UseRouting();
 
-app.UseRequestLocalization();
-
-app.UseLanguageMiddleware();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRequestLocalization();
+app.UseLanguageMiddleware();
 
 app.MapRazorPages();
 
