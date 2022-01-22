@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Localization;
 
-namespace Admin.Middleware
+namespace Admin.Middleware.RequestCultureProviders
 {
     public class SessionRequestCultureProvider : RequestCultureProvider
     {
@@ -16,20 +16,6 @@ namespace Admin.Middleware
                 return Task.FromResult<ProviderCultureResult>(null);
             }
             var language = httpContext.Session.GetString(CultureKey);
-            return !string.IsNullOrEmpty(language)
-                ? Task.FromResult(new ProviderCultureResult(language, language))
-                : Task.FromResult<ProviderCultureResult>(null);
-        }
-    }
-    public class UserClaimRequestCultureProvider : RequestCultureProvider
-    {
-        public override Task<ProviderCultureResult> DetermineProviderCultureResult(HttpContext httpContext)
-        {
-            if (httpContext.User == null)
-            {
-                return Task.FromResult<ProviderCultureResult>(null);
-            }
-            var language = httpContext.User.GetLanguage();
             return !string.IsNullOrEmpty(language)
                 ? Task.FromResult(new ProviderCultureResult(language, language))
                 : Task.FromResult<ProviderCultureResult>(null);

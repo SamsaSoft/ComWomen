@@ -6,6 +6,7 @@ using Core.DataAccess.Entities;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Admin.Middleware;
+using Admin.Middleware.RequestCultureProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,11 +31,13 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.DefaultRequestCulture = new RequestCulture(Settings.DefaultLanguage.ToString());
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
+    options.AddInitialRequestCultureProvider(new SessionRequestCultureProvider());
+    options.AddInitialRequestCultureProvider(new UserClaimRequestCultureProvider());
 });
 
 // DI
 builder.Services.AddScoped<IMediaService, MediaService>();
-
+builder.Services.AddSession();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -51,6 +54,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession();
 
 app.UseRouting();
 
